@@ -1,6 +1,7 @@
 from pathlib import Path
 
 from src.database import initialize_database
+from src.exchanges import initialize_exchange_registry
 from src.ingestion.esma import (
     load_esma_casps,
     normalize_esma_casps,
@@ -16,6 +17,9 @@ ESMA_CSV = Path(
 def main() -> None:
     print("Initializing database...")
     initialize_database()
+
+    print("Initializing exchange registry...")
+    initialize_exchange_registry()
 
     print(f"Loading ESMA data from: {ESMA_CSV}")
 

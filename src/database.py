@@ -35,4 +35,28 @@ def initialize_database() -> None:
             """
         )
 
+        
+
+        connection.execute(
+            """
+            CREATE TABLE IF NOT EXISTS exchanges (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                canonical_name TEXT NOT NULL UNIQUE,
+                website TEXT,
+                primary_jurisdiction TEXT
+            )
+            """
+        )
+
+        connection.execute(
+            """
+            CREATE TABLE IF NOT EXISTS exchange_aliases (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                exchange_id INTEGER NOT NULL,
+                alias TEXT NOT NULL UNIQUE,
+                FOREIGN KEY (exchange_id) REFERENCES exchanges(id)
+            )
+            """
+        )
+
         connection.commit()
