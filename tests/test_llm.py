@@ -5,7 +5,7 @@ def test_llm_connection():
     llm = create_llm()
 
     response = llm.invoke(
-        "In one sentence, what is MiCA?"
+        "hii there!! be short!"
     )
 
     assert response.content
