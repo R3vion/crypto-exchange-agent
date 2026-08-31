@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "crypto-exchange-agent"
+version = "0.1.0"
+requires-python = ">=3.14"
+dependencies = [
+    "langgraph",
+    "langchain",
+    "langchain-community",
+    "langchain-ollama",
+    "langchain-qdrant",
+    "qdrant-client",
+    "streamlit",
+    "pandas",
+    "pyyaml",
+    "pydantic",
+    "python-dotenv",
+    "httpx",
+    "beautifulsoup4",
+    "pypdf",
+    "pytest",
+    "pytest-asyncio",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]

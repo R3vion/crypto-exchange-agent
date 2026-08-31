@@ -1,0 +1,29 @@
+project:
+  name: crypto-exchange-risk-agent
+  version: "0.1.0"
+
+llm:
+  provider: ollama
+  model: qwen3.6:35b
+  temperature: 0
+
+vector_store:
+  provider: qdrant
+  collection: crypto_exchange_documents
+
+database:
+  path: data/structured/financial_data.db
+
+retrieval:
+  top_k: 5
+  score_threshold: 0.35
+
+agent:
+  max_iterations: 8
+
+exchanges:
+  - bitpanda
+  - coinbase
+  - binance
+  - kraken
+  - coincash
