@@ -49,6 +49,13 @@ Rules:
 9. Set requires_risk_scoring to true when the user asks
    about risk, safety, or which exchange is riskier.
 
+For calculation questions:
+- Extract the numeric trade amount when explicitly provided.
+- Store it in calculation_amount.
+- Do not invent an amount.
+- If no amount is provided, calculation_amount must be null.
+- For fee calculations, RAG should be used to find the fee rate.
+
 Determine the main operation required to answer the question.
 Allowed operations:
 

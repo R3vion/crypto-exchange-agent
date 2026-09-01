@@ -63,3 +63,27 @@ def test_risk_question_is_analyzed():
     )
 
     assert result["query_analysis"].operation == "risk_score"
+
+
+def test_fee_calculation_routes_through_rag():
+    graph = build_graph()
+
+    result = graph.invoke(
+        {
+            "question": (
+                "How much would I pay in fees for a "
+                "$10,000 Coinbase trade?"
+            )
+        }
+    )
+
+    assert result["query_analysis"].operation == "calculate"
+    assert result["query_analysis"].calculation_amount == 10000
+    assert len(result["retrieved_documents"]) > 0
+    assert len(result["tool_results"]) > 0
+
+    calculator_result = result["tool_results"][0]["result"]
+
+    assert calculator_result["amount"] == 10000
+    assert calculator_result["fee"] >= 0
+    assert calculator_result["total"] >= 10000

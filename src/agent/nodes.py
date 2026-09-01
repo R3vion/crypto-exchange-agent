@@ -36,3 +36,11 @@ def rag_node(state: AgentState) -> AgentState:
             [],
         ),
     }
+
+def route_after_rag(state: AgentState) -> str:
+    analysis = state["query_analysis"]
+
+    if analysis.operation == "calculate":
+        return "calculator"
+
+    return "complete"

@@ -4,8 +4,10 @@ from src.agent.graph_state import AgentState
 from src.agent.nodes import (
     query_analyzer_node,
     rag_node,
+    route_after_rag,
     route_query,
 )
+from src.tools.nodes import calculator_node
 
 
 def build_graph():
@@ -21,6 +23,11 @@ def build_graph():
         rag_node,
     )
 
+    graph.add_node(
+        "calculator",
+        calculator_node,
+    )
+
     graph.add_edge(
         START,
         "query_analyzer",
@@ -32,15 +39,24 @@ def build_graph():
         {
             "retrieve": "rag",
             "retrieve_and_compare": "rag",
-            "calculate": END,
+            "calculate": "rag",
             "risk_score": END,
             "compare": END,
             "general": END,
         },
     )
 
-    graph.add_edge(
+    graph.add_conditional_edges(
         "rag",
+        route_after_rag,
+        {
+            "calculator": "calculator",
+            "complete": END,
+        },
+    )
+
+    graph.add_edge(
+        "calculator",
         END,
     )
 

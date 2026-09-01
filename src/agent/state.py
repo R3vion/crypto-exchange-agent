@@ -78,3 +78,13 @@ class QueryAnalysis(BaseModel):
             "Whether the risk scoring tool should be used."
         ),
     )
+
+    calculation_amount: float | None = Field(
+        default=None,
+        description="Trade amount to use for a calculation, if provided.",
+    )
+
+    fee_rate: float | None = Field(
+        default=None,
+        description="Fee rate as a decimal, if provided.",
+    )
