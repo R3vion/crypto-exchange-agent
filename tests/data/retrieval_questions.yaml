@@ -1,0 +1,67 @@
+questions:
+  - id: q01
+    question: "What is MiCA?"
+    expected_sources:
+      - ESMA
+    expected_exchanges: []
+
+  - id: q02
+    question: "What is the purpose of the Markets in Crypto-Assets Regulation?"
+    expected_sources:
+      - ESMA
+    expected_exchanges: []
+
+  - id: q03
+    question: "What is a Crypto-Asset Service Provider under MiCA?"
+    expected_sources:
+      - ESMA
+    expected_exchanges: []
+
+  - id: q04
+    question: "What MiCA authorization does Coinbase have in the European Union?"
+    expected_sources:
+      - Coinbase
+    expected_exchanges:
+      - Coinbase
+
+  - id: q05
+    question: "What MiCA authorization does Kraken have in the European Union?"
+    expected_sources:
+      - Kraken
+    expected_exchanges:
+      - Kraken
+
+  - id: q06
+    question: "What MiCA authorization does Bitpanda have?"
+    expected_sources:
+      - Bitpanda
+    expected_exchanges:
+      - Bitpanda
+
+  - id: q07
+    question: "What fees does Coinbase charge for advanced trading?"
+    expected_sources:
+      - Coinbase
+    expected_exchanges:
+      - Coinbase
+
+  - id: q08
+    question: "What are Kraken's trading fees?"
+    expected_sources:
+      - Kraken
+    expected_exchanges:
+      - Kraken
+
+  - id: q09
+    question: "What security measures does Bitpanda describe?"
+    expected_sources:
+      - Bitpanda
+    expected_exchanges:
+      - Bitpanda
+
+  - id: q10
+    question: "What does CoinCash state in its terms and conditions about its services?"
+    expected_sources:
+      - CoinCash
+    expected_exchanges:
+      - CoinCash
