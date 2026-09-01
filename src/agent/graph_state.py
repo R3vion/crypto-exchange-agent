@@ -12,4 +12,6 @@ class AgentState(TypedDict, total=False):
 
     tool_results: list[dict]
 
+    risk_evidence: dict
+
     final_answer: str

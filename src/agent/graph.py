@@ -7,7 +7,7 @@ from src.agent.nodes import (
     route_after_rag,
     route_query,
 )
-from src.tools.nodes import calculator_node
+from src.tools.nodes import calculator_node, risk_scoring_node
 
 
 def build_graph():
@@ -28,6 +28,11 @@ def build_graph():
         calculator_node,
     )
 
+    graph.add_node(
+        "risk_scoring",
+        risk_scoring_node,
+    )
+
     graph.add_edge(
         START,
         "query_analyzer",
@@ -40,8 +45,8 @@ def build_graph():
             "retrieve": "rag",
             "retrieve_and_compare": "rag",
             "calculate": "rag",
-            "risk_score": END,
-            "compare": END,
+            "risk_score": "rag",
+            "compare": "rag",
             "general": END,
         },
     )
@@ -51,12 +56,18 @@ def build_graph():
         route_after_rag,
         {
             "calculator": "calculator",
+            "risk_scoring": "risk_scoring",
             "complete": END,
         },
     )
 
     graph.add_edge(
         "calculator",
+        END,
+    )
+
+    graph.add_edge(
+        "risk_scoring",
         END,
     )
 

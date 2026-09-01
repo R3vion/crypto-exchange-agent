@@ -1,9 +1,6 @@
 from langchain_ollama import OllamaEmbeddings
 
-from src.config import OLLAMA_BASE_URL
-
-
-EMBEDDING_MODEL = "nomic-embed-text"
+from src.config import OLLAMA_BASE_URL, EMBEDDING_MODEL
 
 
 def create_embeddings() -> OllamaEmbeddings:

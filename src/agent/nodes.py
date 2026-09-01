@@ -43,4 +43,7 @@ def route_after_rag(state: AgentState) -> str:
     if analysis.operation == "calculate":
         return "calculator"
 
+    if analysis.operation == "risk_score":
+        return "risk_scoring"
+
     return "complete"
