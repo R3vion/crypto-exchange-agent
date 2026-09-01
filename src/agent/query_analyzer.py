@@ -33,8 +33,7 @@ Supported intents:
 
 Rules:
 
-1. Extract exchange names explicitly mentioned by
-   the user.
+1. Extract exchange names explicitly mentioned by the user.
 2. Do not invent exchanges.
 3. Detect the relevant jurisdiction when it is clear.
 4. Normalize jurisdiction to exactly one of:
@@ -46,8 +45,7 @@ Rules:
 7. Set requires_rag to true when factual external
    information is needed.
 8. Set requires_calculation to true only when an actual
-   numerical calculation or quantitative comparison
-   is needed.
+   numerical calculation or quantitative comparison is needed.
 9. Set requires_risk_scoring to true when the user asks
    about risk, safety, or which exchange is riskier.
 
@@ -93,14 +91,10 @@ operation = retrieve_and_compare
 """
 
 
-def analyze_query(
-    question: str,
-) -> QueryAnalysis:
+def analyze_query(question: str) -> QueryAnalysis:
     llm = create_llm()
 
-    structured_llm = llm.with_structured_output(
-        QueryAnalysis
-    )
+    structured_llm = llm.with_structured_output(QueryAnalysis)
 
     prompt = (
         f"{SYSTEM_PROMPT}\n\n"

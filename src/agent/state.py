@@ -75,7 +75,6 @@ class QueryAnalysis(BaseModel):
 
     requires_risk_scoring: bool = Field(
         description=(
-            "Whether the risk scoring tool should "
-            "be used."
+            "Whether the risk scoring tool should be used."
         ),
     )

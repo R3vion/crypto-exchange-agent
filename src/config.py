@@ -13,7 +13,12 @@ OLLAMA_BASE_URL = os.getenv(
 
 OLLAMA_MODEL = os.getenv(
     "OLLAMA_MODEL",
-    "qwen3.8:27b",
+    "qwen3.6:35b",
+)
+
+EMBEDDING_MODEL = os.getenv(
+    "EMBEDDING_MODEL",
+    "nomic-embed-text"
 )
 
 QDRANT_URL = os.getenv(
