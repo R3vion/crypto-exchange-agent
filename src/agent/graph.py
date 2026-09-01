@@ -3,6 +3,7 @@ from langgraph.graph import END, START, StateGraph
 from src.agent.graph_state import AgentState
 from src.agent.nodes import (
     query_analyzer_node,
+    rag_node,
     route_query,
 )
 
@@ -15,6 +16,11 @@ def build_graph():
         query_analyzer_node,
     )
 
+    graph.add_node(
+        "rag",
+        rag_node,
+    )
+
     graph.add_edge(
         START,
         "query_analyzer",
@@ -24,13 +30,18 @@ def build_graph():
         "query_analyzer",
         route_query,
         {
-            "retrieve": END,
+            "retrieve": "rag",
+            "retrieve_and_compare": "rag",
             "calculate": END,
             "risk_score": END,
             "compare": END,
-            "retrieve_and_compare": END,
             "general": END,
         },
+    )
+
+    graph.add_edge(
+        "rag",
+        END,
     )
 
     return graph.compile()
