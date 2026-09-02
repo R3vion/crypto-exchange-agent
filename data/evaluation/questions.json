@@ -1,0 +1,102 @@
+[
+  {
+    "id": "q01",
+    "question": "What is MiCA?",
+    "expected_operation": "retrieve"
+  },
+  {
+    "id": "q02",
+    "question": "What is the purpose of MiCA?",
+    "expected_operation": "retrieve"
+  },
+  {
+    "id": "q03",
+    "question": "What is a CASP under MiCA?",
+    "expected_operation": "retrieve"
+  },
+  {
+    "id": "q04",
+    "question": "What MiCA authorization does Coinbase have in the EU?",
+    "expected_operation": "retrieve"
+  },
+  {
+    "id": "q05",
+    "question": "What MiCA authorization does Kraken have?",
+    "expected_operation": "retrieve"
+  },
+  {
+    "id": "q06",
+    "question": "What MiCA licenses does Bitpanda have?",
+    "expected_operation": "retrieve"
+  },
+  {
+    "id": "q07",
+    "question": "What are Coinbase Advanced trading fees?",
+    "expected_operation": "retrieve"
+  },
+  {
+    "id": "q08",
+    "question": "What are Kraken trading fees?",
+    "expected_operation": "retrieve"
+  },
+  {
+    "id": "q09",
+    "question": "What security measures does Bitpanda describe?",
+    "expected_operation": "retrieve"
+  },
+  {
+    "id": "q10",
+    "question": "What are CoinCash terms and conditions?",
+    "expected_operation": "retrieve"
+  },
+  {
+    "id": "q11",
+    "question": "Which exchange is the riskiest and why?",
+    "expected_operation": "risk_score"
+  },
+  {
+    "id": "q12",
+    "question": "Compare Coinbase, Kraken and Bitpanda under MiCA.",
+    "expected_operation": "retrieve_and_compare"
+  },
+  {
+    "id": "q13",
+    "question": "Which exchange is the best long-term choice under MiCA?",
+    "expected_operation": "retrieve_and_compare"
+  },
+  {
+    "id": "q14",
+    "question": "Which exchange has the strongest regulatory position in the EU?",
+    "expected_operation": "retrieve_and_compare"
+  },
+  {
+    "id": "q15",
+    "question": "How much is a 0.6% fee on a $10,000 trade?",
+    "expected_operation": "calculate"
+  },
+  {
+    "id": "q16",
+    "question": "Calculate the trading fee for a $5,000 trade at 0.4%.",
+    "expected_operation": "calculate"
+  },
+  {
+    "id": "q17",
+    "question": "Which exchange has the lowest trading cost?",
+    "expected_operation": "retrieve_and_compare"
+  },
+  {
+    "id": "q18",
+    "question": "Which exchange has the strongest security evidence?",
+    "expected_operation": "retrieve_and_compare"
+  },
+  {
+    "id": "q19",
+    "question": "What is Binance's current MiCA situation in the EU?",
+    "expected_operation": "retrieve"
+  },
+  {
+    "id": "q20",
+    "question": "What is CoinCash's regulatory status in Hungary?",
+    "expected_operation": "retrieve"
+  }
+]

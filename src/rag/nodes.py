@@ -42,12 +42,12 @@ class CoverageEvaluation(BaseModel):
 
 
 def retrieve_documents(state: RAGState) -> RAGState:
-    print("\n=== RAG RETRIEVAL DEBUG ===")
-    print("iteration:", state.get("iteration", 0) + 1)
-    print("question:", state["question"])
-    print("exchanges:", state.get("exchanges", []))
-    print("retrieval_query:", state.get("retrieval_query"))
-    print("===========================\n")
+    # print("\n=== RAG RETRIEVAL DEBUG ===")
+    # print("iteration:", state.get("iteration", 0) + 1)
+    # print("question:", state["question"])
+    # print("exchanges:", state.get("exchanges", []))
+    # print("retrieval_query:", state.get("retrieval_query"))
+    # print("===========================\n")
 
     iteration = state.get("iteration", 0) + 1
 
@@ -80,8 +80,8 @@ def retrieve_documents(state: RAGState) -> RAGState:
                 f"Focus specifically on {exchange}."
             )
 
-            print(f"Retrieving for exchange: {exchange}")
-            print(f"Query: {entity_query}")
+            # print(f"Retrieving for exchange: {exchange}")
+            # print(f"Query: {entity_query}")
 
             documents = retrieve(
                 entity_query,
@@ -89,13 +89,13 @@ def retrieve_documents(state: RAGState) -> RAGState:
                 exchange=exchange,
             )
 
-            print(
-                "Retrieved:",
-                [
-                    doc["metadata"].get("exchange")
-                    for doc in documents
-                ],
-            )
+            # print(
+            #     "Retrieved:",
+            #     [
+            #         doc["metadata"].get("exchange")
+            #         for doc in documents
+            #     ],
+            # )
 
             for document in documents:
                 document_id = document.get("id")

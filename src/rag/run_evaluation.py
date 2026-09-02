@@ -14,19 +14,13 @@ def main() -> None:
         top_k=5,
     )
 
-    print()
-    print("Retrieval Evaluation")
-    print("=====================")
-    print(
-        f"Questions: {evaluation['total']}"
-    )
-    print(
-        f"Hits:      {evaluation['hits']}"
-    )
-    print(
-        f"Hit rate:  {evaluation['hit_rate']:.2%}"
-    )
-    print()
+    # print()
+    # print("Retrieval Evaluation")
+    # print("=====================")
+    # print(f"Questions: {evaluation['total']}")
+    # print(f"Hits:      {evaluation['hits']}")
+    # print(f"Hit rate:  {evaluation['hit_rate']:.2%}")
+    # print()
 
     for result in evaluation["results"]:
         status = (
@@ -35,21 +29,21 @@ def main() -> None:
             else "FAIL"
         )
 
-        print(
-            f"[{status}] "
-            f"{result['id']}: "
-            f"{result['question']}"
-        )
+        # print(
+        #     f"[{status}] "
+        #     f"{result['id']}: "
+        #     f"{result['question']}"
+        # )
 
-        print(
-            f"  Expected: "
-            f"{result['expected_sources']}"
-        )
+        # print(
+        #     f"  Expected: "
+        #     f"{result['expected_sources']}"
+        # )
 
-        print(
-            f"  Retrieved: "
-            f"{result['retrieved_sources']}"
-        )
+        # print(
+        #     f"  Retrieved: "
+        #     f"{result['retrieved_sources']}"
+        # )
 
 
 if __name__ == "__main__":
