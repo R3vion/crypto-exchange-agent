@@ -8,6 +8,8 @@ from src.agent.nodes import (
     route_query,
 )
 from src.tools.nodes import calculator_node, risk_scoring_node
+from src.agent.answer_generator import answer_generator_node
+from src.agent.evidence import evidence_review_node
 
 
 def build_graph():
@@ -33,6 +35,16 @@ def build_graph():
         risk_scoring_node,
     )
 
+    graph.add_node(
+        "evidence_review",
+        evidence_review_node,
+    )
+
+    graph.add_node(
+        "answer_generator",
+        answer_generator_node,
+    )
+
     graph.add_edge(
         START,
         "query_analyzer",
@@ -47,7 +59,7 @@ def build_graph():
             "calculate": "rag",
             "risk_score": "rag",
             "compare": "rag",
-            "general": END,
+            "general": "answer_generator",
         },
     )
 
@@ -57,17 +69,27 @@ def build_graph():
         {
             "calculator": "calculator",
             "risk_scoring": "risk_scoring",
-            "complete": END,
+            "complete": "evidence_review",
         },
     )
 
     graph.add_edge(
         "calculator",
-        END,
+        "evidence_review",
     )
 
     graph.add_edge(
         "risk_scoring",
+        "evidence_review",
+    )
+
+    graph.add_edge(
+        "evidence_review",
+        "answer_generator",
+    )
+
+    graph.add_edge(
+        "answer_generator",
         END,
     )
 

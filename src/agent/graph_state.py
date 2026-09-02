@@ -14,4 +14,7 @@ class AgentState(TypedDict, total=False):
 
     risk_evidence: dict
 
+    evidence_summary: str
+    evidence_sufficient: bool
+
     final_answer: str
