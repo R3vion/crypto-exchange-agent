@@ -26,8 +26,8 @@ def test_graph_routes_risk():
     result = graph.invoke(
         {
             "question": (
-                "Which exchange is the riskiest "
-                "and why?"
+                "Which exchange is the riskiest and why?"
+                # "How much risk does bitpanda users face?"
             )
         }
     )
@@ -95,7 +95,8 @@ def test_risk_question_runs_risk_tool():
     result = graph.invoke(
         {
             "question": (
-                "Which exchange is the riskiest and why?"
+                # "Which exchange is the riskiest and why?"
+                "binance is more riskier than kraken and why?"
             )
         }
     )

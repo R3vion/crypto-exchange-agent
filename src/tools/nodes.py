@@ -24,10 +24,10 @@ def risk_scoring_node(state: AgentState) -> AgentState:
 
     exchanges = analysis.exchanges
 
-    if not exchanges:
-        raise ValueError(
-            "Risk scoring requires at least one exchange."
-        )
+    # if not exchanges:
+    #     raise ValueError(
+    #         "Risk scoring requires at least one exchange."
+    #     )
 
     risk_scores = {}
     tool_results = []
