@@ -1,5 +1,16 @@
+import re
+
 from src.agent.state import QueryAnalysis
 from src.llm import create_llm
+
+
+SUPPORTED_EXCHANGES = [
+    "Coinbase",
+    "Kraken",
+    "Bitpanda",
+    "Binance",
+    "CoinCash",
+]
 
 
 SYSTEM_PROMPT = """
@@ -57,6 +68,7 @@ For calculation questions:
 - For fee calculations, RAG should be used to find the fee rate.
 
 Determine the main operation required to answer the question.
+
 Allowed operations:
 
 - retrieve:
@@ -98,6 +110,25 @@ operation = retrieve_and_compare
 """
 
 
+def extract_exchanges(question: str) -> list[str]:
+    """
+    Deterministically extract supported exchange names
+    mentioned in the user question.
+    """
+
+    question_lower = question.lower()
+
+    found = []
+
+    for exchange in SUPPORTED_EXCHANGES:
+        pattern = rf"\b{re.escape(exchange.lower())}\b"
+
+        if re.search(pattern, question_lower):
+            found.append(exchange)
+
+    return found
+
+
 def analyze_query(question: str) -> QueryAnalysis:
     llm = create_llm()
 
@@ -108,4 +139,10 @@ def analyze_query(question: str) -> QueryAnalysis:
         f"User question:\n{question}"
     )
 
-    return structured_llm.invoke(prompt)
+    analysis = structured_llm.invoke(prompt)
+
+    # Exchange extraction is deterministic because the
+    # supported exchange list is known and fixed.
+    analysis.exchanges = extract_exchanges(question)
+
+    return analysis

@@ -11,4 +11,6 @@ class RAGState(TypedDict, total=False):
     iteration: int
     coverage_score: float
     coverage_sufficient: bool
+    coverage_by_exchange: dict[str, float]
+    missing_exchanges: list[str]
     retrieval_query: str

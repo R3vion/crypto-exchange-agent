@@ -5,6 +5,13 @@ from src.rag.graph import build_rag_graph
 
 def query_analyzer_node(state: AgentState) -> AgentState:
     analysis = analyze_query(state["question"])
+    print("\n=== QUERY ANALYZER DEBUG ===")
+    print("question:", state["question"])
+    print("operation:", analysis.operation)
+    print("exchanges:", analysis.exchanges)
+    print("jurisdiction:", analysis.jurisdiction)
+    print("requires_risk_scoring:", analysis.requires_risk_scoring)
+    print("============================\n")
 
     return {
         "query_analysis": analysis,

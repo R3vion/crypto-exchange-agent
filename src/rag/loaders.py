@@ -35,7 +35,7 @@ def load_pdf(
         text = page.extract_text()
 
         if text:
-            pages.append(text.strip())
+            pages.append(text.strip().replace('\n\n', '\n'))
 
     content = "\n\n".join(pages).strip()
 

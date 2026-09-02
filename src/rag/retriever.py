@@ -76,11 +76,11 @@ def retrieve(
 
     return [
         {
+            "id": str(point.id),
             "text": point.payload["text"],
             "metadata": {
                 key: value
-                for key, value
-                in point.payload.items()
+                for key, value in point.payload.items()
                 if key != "text"
             },
             "score": point.score,

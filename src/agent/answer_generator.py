@@ -24,14 +24,6 @@ def answer_generator_node(
         False,
     )
 
-    if not evidence_sufficient:
-        return {
-            "final_answer": (
-                "I do not have enough reliable evidence "
-                "to answer this question confidently."
-            )
-        }
-
     prompt = f"""
 You are a crypto-exchange research assistant.
 
@@ -61,6 +53,15 @@ Rules:
 
     response = llm.invoke(prompt)
 
-    return {
-        "final_answer": response.content,
-    }
+    if not evidence_sufficient:
+        return {
+            "final_answer": (
+                "*I do not have enough reliable evidence "
+                "to answer this question confidently.*"
+                f"\n\n{response.content}"
+            )
+        }
+    else:
+        return {
+            "final_answer": response.content,
+        }

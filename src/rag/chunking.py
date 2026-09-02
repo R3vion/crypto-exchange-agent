@@ -8,8 +8,8 @@ def chunk_document(
     document: SourceDocument,
 ) -> list[Document]:
     splitter = RecursiveCharacterTextSplitter(
-        chunk_size=1200,
-        chunk_overlap=200,
+        chunk_size=1500,
+        chunk_overlap=225,
         separators=[
             "\n\n",
             "\n",
