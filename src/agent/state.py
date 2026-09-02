@@ -88,3 +88,11 @@ class QueryAnalysis(BaseModel):
         default=None,
         description="Fee rate as a decimal, if provided.",
     )
+
+class ExchangeExtraction(BaseModel):
+    exchanges: list[str] = Field(
+        description=(
+            "Exchanges from the provided supported exchange list "
+            "that are relevant to the user's question."
+        )
+    )

@@ -1,6 +1,6 @@
 import re
 
-from src.agent.state import QueryAnalysis
+from src.agent.state import QueryAnalysis, ExchangeExtraction
 from src.llm import create_llm
 
 
@@ -126,7 +126,10 @@ def extract_exchanges(question: str) -> list[str]:
         if re.search(pattern, question_lower):
             found.append(exchange)
 
-    return found
+    if found:
+        return found
+
+    return extract_exchanges_with_llm(question)
 
 
 def analyze_query(question: str) -> QueryAnalysis:
@@ -146,3 +149,49 @@ def analyze_query(question: str) -> QueryAnalysis:
     analysis.exchanges = extract_exchanges(question)
 
     return analysis
+
+
+def extract_exchanges_with_llm(question: str) -> list[str]:
+    llm = create_llm().with_structured_output(
+        ExchangeExtraction
+    )
+
+    supported_exchanges = ", ".join(
+        SUPPORTED_EXCHANGES
+    )
+
+    prompt = f"""
+You are an exchange-name extraction component.
+
+Supported exchanges:
+{supported_exchanges}
+
+User question:
+{question}
+
+Determine which supported exchanges are relevant
+to answering the user's question.
+
+Rules:
+
+1. You may ONLY return exchanges from the supported list.
+2. Never invent an exchange.
+3. If the user asks about "all exchanges",
+   "all available exchanges", "among all exchanges",
+   "which exchange is the riskiest", "on which platform", or similar wording,
+   return ALL supported exchanges.
+4. If the user asks which exchange is best/worst/riskier
+   without naming specific exchanges, return ALL supported exchanges.
+5. If the question explicitly names exchanges,
+   return only those exchanges.
+6. If no supported exchange is relevant, return an empty list.
+7. Return only exchange names, not explanations.
+"""
+
+    result = llm.invoke(prompt)
+
+    return [
+        exchange
+        for exchange in result.exchanges
+        if exchange in SUPPORTED_EXCHANGES
+    ]

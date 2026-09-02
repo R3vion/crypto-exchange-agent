@@ -46,9 +46,7 @@ Rules:
 4. Do not present uncertain information as certain.
 5. If comparing exchanges, explain the main reasons.
 6. If a calculation result is available, show the result clearly.
-7. If a risk score is available, explain that it is a
-   prototype scoring model, not an objective financial rating.
-8. Do not give personalized financial advice.
+7. Do not give personalized financial advice.
 """
 
     response = llm.invoke(prompt)
