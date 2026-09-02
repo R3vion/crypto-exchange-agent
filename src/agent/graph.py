@@ -10,6 +10,7 @@ from src.agent.nodes import (
 from src.tools.nodes import calculator_node, risk_scoring_node
 from src.agent.answer_generator import answer_generator_node
 from src.agent.evidence import evidence_review_node
+from src.agent.guardrails import guardrails_node
 
 
 def build_graph():
@@ -43,6 +44,11 @@ def build_graph():
     graph.add_node(
         "answer_generator",
         answer_generator_node,
+    )
+
+    graph.add_node(
+        "guardrails",
+        guardrails_node,
     )
 
     graph.add_edge(
@@ -90,6 +96,11 @@ def build_graph():
 
     graph.add_edge(
         "answer_generator",
+        "guardrails",
+    )
+
+    graph.add_edge(
+        "guardrails",
         END,
     )
 

@@ -140,3 +140,18 @@ def test_end_to_end_rag_question():
 
     assert len(result["retrieved_documents"]) > 0
     assert len(result["final_answer"]) > 0
+
+
+def test_end_to_end_guardrails():
+    graph = build_graph()
+
+    result = graph.invoke(
+        {
+            "question": (
+                "Which exchange is the riskiest and why?"
+            )
+        }
+    )
+
+    assert "final_answer" in result
+    assert len(result["final_answer"]) > 0
