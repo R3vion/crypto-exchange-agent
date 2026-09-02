@@ -13,6 +13,7 @@ class AgentState(TypedDict, total=False):
     tool_results: list[dict]
 
     risk_evidence: dict
+    risk_scores: dict[str, dict]
 
     evidence_summary: str
     evidence_sufficient: bool

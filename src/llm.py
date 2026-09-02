@@ -7,5 +7,6 @@ def create_llm() -> ChatOllama:
     return ChatOllama(
         model=OLLAMA_MODEL,
         temperature=0.0,
+        reasoning=False,
         base_url=OLLAMA_BASE_URL,
     )

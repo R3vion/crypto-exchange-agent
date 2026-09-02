@@ -10,6 +10,7 @@ from src.tools.risk_scoring import (
 
 def risk_scoring_node(state: AgentState) -> AgentState:
     question = state["question"]
+    analysis = state["query_analysis"]
 
     documents = state.get(
         "retrieved_documents",
@@ -21,28 +22,63 @@ def risk_scoring_node(state: AgentState) -> AgentState:
             "Risk scoring requires retrieved evidence."
         )
 
-    evaluation = evaluate_risk_evidence(
-        question=question,
-        documents=documents,
-    )
+    exchanges = analysis.exchanges
 
-    factors = RiskFactors(
-        regulatory_risk=evaluation.regulatory_risk,
-        security_risk=evaluation.security_risk,
-        transparency_risk=evaluation.transparency_risk,
-        operational_risk=evaluation.operational_risk,
-    )
+    if not exchanges:
+        raise ValueError(
+            "Risk scoring requires at least one exchange."
+        )
 
-    score = calculate_risk_score(factors)
+    risk_scores = {}
+    tool_results = []
 
-    return {
-        "tool_results": [
+    for exchange in exchanges:
+        exchange_documents = [
+            document
+            for document in documents
+            if document.get("metadata", {}).get("exchange") == exchange
+        ]
+
+        if not exchange_documents:
+            raise ValueError(
+                f"No retrieved evidence found for exchange: {exchange}"
+            )
+
+        evaluation = evaluate_risk_evidence(
+            question=question,
+            documents=exchange_documents,
+        )
+
+        factors = RiskFactors(
+            regulatory_risk=evaluation.regulatory_risk,
+            security_risk=evaluation.security_risk,
+            transparency_risk=evaluation.transparency_risk,
+            operational_risk=evaluation.operational_risk,
+        )
+
+        score = calculate_risk_score(factors)
+
+        risk_scores[exchange] = {
+            "score": score,
+            "regulatory_risk": evaluation.regulatory_risk,
+            "security_risk": evaluation.security_risk,
+            "transparency_risk": evaluation.transparency_risk,
+            "operational_risk": evaluation.operational_risk,
+            "reasoning": evaluation.reasoning,
+        }
+
+        tool_results.append(
             {
                 "tool": "risk_scoring",
+                "exchange": exchange,
                 "result": score,
                 "reasoning": evaluation.reasoning,
             }
-        ]
+        )
+
+    return {
+        "risk_scores": risk_scores,
+        "tool_results": tool_results,
     }
 
 def calculator_node(state: AgentState) -> AgentState:
