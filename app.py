@@ -29,7 +29,7 @@ EXAMPLE_QUESTIONS = [
 st.set_page_config(
     page_title="Crypto Exchange Research Assistant",
     page_icon="₿",
-    layout="wide",
+    layout="wide"
 )
 
 
@@ -39,18 +39,11 @@ def get_graph():
 
 
 st.title("Crypto Exchange Research Assistant")
-
-st.write(
-    "Agentic RAG assistant for comparing crypto exchanges "
-    "using regulatory, fee, security and operational evidence."
-)
+st.write("Agentic RAG assistant for comparing crypto exchanges using regulatory, fee, security and operational evidence.")
 
 # Initialize example questions
 if "example_questions" not in st.session_state:
-    st.session_state["example_questions"] = random.sample(
-        EXAMPLE_QUESTIONS,
-        3,
-    )
+    st.session_state["example_questions"] = random.sample(EXAMPLE_QUESTIONS, 3)
 
 
 # Callback for example buttons
@@ -61,10 +54,8 @@ def select_example(question):
 
 st.text_input(
     "Ask a question",
-    placeholder=(
-        "Ask about regulation, fees, security or risk... On 5 exchanges: CoinBase, Kraken, Bitpanda, Binance, CoinCash"
-    ),
-    key="question",
+    placeholder=("Ask about regulation, fees, security or risk... On 5 exchanges: CoinBase, Kraken, Bitpanda, Binance, CoinCash"),
+    key="question"
 )
 
 with st.container(horizontal=True):
@@ -74,13 +65,12 @@ with st.container(horizontal=True):
             key=f"example_{example}",
             type="tertiary",
             on_click=select_example,
-            args=(example,),
+            args=(example,)
         )
 
 if st.button("Show 3 new examples", type="tertiary"):
     st.session_state["example_questions"] = random.sample(EXAMPLE_QUESTIONS, 3)
     st.rerun()
-
 
 st.write("\n")
 st.write("\n")
@@ -88,12 +78,10 @@ st.write("\n")
 
 analyze_clicked = st.button("Analyze")
 
-
 if (st.session_state.get("analyze_from_example", False) or analyze_clicked):
     st.session_state["analyze_from_example"] = False
 
     question = st.session_state["question"]
-
     if not question:
         st.warning("Please enter a question first.")
     else:
@@ -116,16 +104,8 @@ if (st.session_state.get("analyze_from_example", False) or analyze_clicked):
         #     print(f"\n\n\n{key}:\n{value}")
 
         st.subheader("Answer")
-
-        st.write(
-            result.get(
-                "final_answer",
-                "No answer was generated.",
-            )
-        )
-
+        st.write(result.get("final_answer", "No answer was generated."))
         st.divider()
-
         st.subheader("Agent steps")
 
         coverage_score = result.get("coverage_score")
@@ -137,17 +117,11 @@ if (st.session_state.get("analyze_from_example", False) or analyze_clicked):
 
             with col1:
                 if coverage_score is not None:
-                    st.metric(
-                        "Coverage score",
-                        f"{coverage_score:.2f}",
-                    )
+                    st.metric("Coverage score", f"{coverage_score:.2f}")
 
             with col2:
                 if rag_iterations is not None:
-                    st.metric(
-                        "RAG iterations",
-                        rag_iterations,
-                    )
+                    st.metric("RAG iterations", rag_iterations)
 
             with col3:
                 if coverage_score is not None:
@@ -168,35 +142,21 @@ if (st.session_state.get("analyze_from_example", False) or analyze_clicked):
                     "exchanges": analysis.exchanges,
                     "jurisdiction": analysis.jurisdiction,
                     "requires_rag": analysis.requires_rag,
-                    "requires_calculation": (
-                        analysis.requires_calculation
-                    ),
-                    "requires_risk_scoring": (
-                        analysis.requires_risk_scoring
-                    ),
+                    "requires_calculation": analysis.requires_calculation,
+                    "requires_risk_scoring": analysis.requires_risk_scoring
                 }
             )
 
-        documents = result.get(
-            "retrieved_documents",
-            [],
-        )
+        documents = result.get("retrieved_documents", [])
 
-        st.write(
-            f"**Retrieved evidence:** {len(documents)} documents"
-        )
+        st.write(f"**Retrieved evidence:** {len(documents)} documents")
 
         coverage_score = result.get("coverage_score")
 
         if coverage_score is not None:
-            st.write(
-                f"**RAG coverage score:** {coverage_score:.2f}"
-            )
+            st.write(f"**RAG coverage score:** {coverage_score:.2f}")
 
-        tool_results = result.get(
-            "tool_results",
-            [],
-        )
+        tool_results = result.get("tool_results", [])
 
         if tool_results:
             st.write("**Tools used**")
@@ -204,9 +164,7 @@ if (st.session_state.get("analyze_from_example", False) or analyze_clicked):
             for tool_result in tool_results:
                 st.json(tool_result)
 
-        evidence_summary = result.get(
-            "evidence_summary"
-        )
+        evidence_summary = result.get("evidence_summary")
 
         if evidence_summary:
             st.write("**Evidence review**")
@@ -218,10 +176,7 @@ if (st.session_state.get("analyze_from_example", False) or analyze_clicked):
             with st.expander(f"Document {index}"):
                 st.write(document.get("text", ""))
 
-                metadata = document.get(
-                    "metadata",
-                    {},
-                )
+                metadata = document.get("metadata", {})
 
                 if metadata:
                     st.json(metadata)

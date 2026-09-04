@@ -2,58 +2,38 @@ from src.agent.graph_state import AgentState
 from src.tools.calculator import calculate_fee
 from src.tools.fee_extractor import extract_fee_rate
 from src.tools.risk_evaluator import evaluate_risk_evidence
-from src.tools.risk_scoring import (
-    RiskFactors,
-    calculate_risk_score,
-)
+from src.tools.risk_scoring import RiskFactors, calculate_risk_score
 
 
 def risk_scoring_node(state: AgentState) -> AgentState:
     question = state["question"]
     analysis = state["query_analysis"]
 
-    documents = state.get(
-        "retrieved_documents",
-        [],
-    )
-
+    documents = state.get("retrieved_documents", [])
     if not documents:
-        raise ValueError(
-            "Risk scoring requires retrieved evidence."
-        )
+        raise ValueError("Risk scoring requires retrieved evidence.")
 
     exchanges = analysis.exchanges
-
-    # if not exchanges:
-    #     raise ValueError(
-    #         "Risk scoring requires at least one exchange."
-    #     )
 
     risk_scores = {}
     tool_results = []
 
     for exchange in exchanges:
-        exchange_documents = [
-            document
-            for document in documents
-            if document.get("metadata", {}).get("exchange") == exchange
-        ]
+        exchange_documents = []
+        for document in documents:
+            if document.get("metadata", {}).get("exchange") == exchange:
+                exchange_documents.append(document)
 
-        if not exchange_documents:
-            raise ValueError(
-                f"No retrieved evidence found for exchange: {exchange}"
-            )
+        if len(exchange_documents):
+            raise ValueError(f"No retrieved evidence found for exchange: {exchange}")
 
-        evaluation = evaluate_risk_evidence(
-            question=question,
-            documents=exchange_documents,
-        )
+        evaluation = evaluate_risk_evidence(question=question, documents=exchange_documents)
 
         factors = RiskFactors(
             regulatory_risk=evaluation.regulatory_risk,
             security_risk=evaluation.security_risk,
             transparency_risk=evaluation.transparency_risk,
-            operational_risk=evaluation.operational_risk,
+            operational_risk=evaluation.operational_risk
         )
 
         score = calculate_risk_score(factors)
@@ -85,39 +65,27 @@ def calculator_node(state: AgentState) -> AgentState:
     analysis = state["query_analysis"]
 
     if analysis.calculation_amount is None:
-        raise ValueError(
-            "Calculator requires a calculation amount."
-        )
+        raise ValueError("Calculator requires a calculation amount.")
 
     documents = state.get("retrieved_documents", [])
-
     if not documents:
-        raise ValueError(
-            "Calculator requires retrieved evidence."
-        )
+        raise ValueError("Calculator requires retrieved evidence.")
 
     fee_rate = None
     fee_source = None
 
     for document in documents:
         text = document.get("text", "")
-
         extracted_rate = extract_fee_rate(text)
-
         if extracted_rate is not None:
             fee_rate = extracted_rate
             fee_source = document
             break
 
     if fee_rate is None:
-        raise ValueError(
-            "Could not extract a fee rate from retrieved evidence."
-        )
+        raise ValueError("Could not extract a fee rate from retrieved evidence.")
 
-    result = calculate_fee(
-        amount=analysis.calculation_amount,
-        fee_rate=fee_rate,
-    )
+    result = calculate_fee(amount=analysis.calculation_amount, fee_rate=fee_rate)
 
     return {
         "tool_results": [

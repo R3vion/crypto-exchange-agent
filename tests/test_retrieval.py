@@ -2,9 +2,7 @@ from src.rag.retriever import retrieve
 
 
 def test_retrieval_returns_results():
-    results = retrieve(
-        "What is MiCA?"
-    )
+    results = retrieve("What is MiCA?")
 
     assert results
     assert len(results) <= 5

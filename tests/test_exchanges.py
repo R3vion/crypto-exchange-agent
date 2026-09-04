@@ -1,8 +1,5 @@
 from src.database import initialize_database
-from src.exchanges import (
-    initialize_exchange_registry,
-    resolve_exchange,
-)
+from src.exchanges import initialize_exchange_registry, resolve_exchange
 
 
 def setup_module():

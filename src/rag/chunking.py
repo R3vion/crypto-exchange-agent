@@ -4,9 +4,7 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from src.rag.models import SourceDocument
 
 
-def chunk_document(
-    document: SourceDocument,
-) -> list[Document]:
+def chunk_document(document: SourceDocument) -> list[Document]:
     splitter = RecursiveCharacterTextSplitter(
         chunk_size=1500,
         chunk_overlap=225,
@@ -14,8 +12,8 @@ def chunk_document(
             "\n\n",
             "\n",
             ". ",
-            " ",
-        ],
+            " "
+        ]
     )
 
     chunks = splitter.create_documents(
@@ -28,13 +26,9 @@ def chunk_document(
                 "jurisdiction": document.metadata.jurisdiction,
                 "document_type": document.metadata.document_type,
                 "url": document.metadata.url,
-                "published_at": (
-                    document.metadata.published_at.isoformat()
-                    if document.metadata.published_at
-                    else None
-                ),
+                "published_at": (document.metadata.published_at.isoformat() if document.metadata.published_at else None)
             }
-        ],
+        ]
     )
 
     return chunks

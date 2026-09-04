@@ -12,27 +12,22 @@ TOP_K = 5
 
 class CoverageEvaluation(BaseModel):
     coverage_score: float = Field(
-        ge=0.0,
-        le=1.0,
-        description=(
-            "Overall retrieval coverage. "
-            "1.0 means sufficient evidence, "
-            "0.0 means almost no useful evidence."
-        ),
+        ge=0.0, le=1.0,
+        description="Overall retrieval coverage. 1.0 means sufficient evidence, 0.0 means almost no useful evidence."
     )
 
     coverage_by_exchange: dict[str, float] = Field(
         default_factory=dict,
-        description="Coverage score for each requested exchange. Keys must be exchange names.",
+        description="Coverage score for each requested exchange. Keys must be exchange names."
     )
 
     missing_information: list[str] = Field(
         default_factory=list,
-        description="Important information still missing.",
+        description="Important information still missing."
     )
 
     improved_query: str = Field(
-        description="A better retrieval query targeting the missing information.",
+        description="A better retrieval query targeting the missing information."
     )
 
 
@@ -45,77 +40,43 @@ def retrieve_documents(state: RAGState) -> RAGState:
     # print("===========================\n")
 
     iteration = state.get("iteration", 0) + 1
-
     question = state["question"]
     retrieval_query = state.get("retrieval_query", question)
-
     exchanges = state.get("exchanges", [])
+    existing_documents = state.get("retrieved_documents", [])
 
-    existing_documents = state.get(
-        "retrieved_documents",
-        [],
-    )
-
-    existing_ids = {
-        doc.get("id")
-        for doc in existing_documents
-        if doc.get("id") is not None
-    }
+    existing_ids = {doc.get("id") for doc in existing_documents if doc.get("id") is not None}
 
     merged_documents = list(existing_documents)
 
     if exchanges:
         for exchange in exchanges:
-            entity_query = (
-                f"{retrieval_query}\n"
-                f"Focus specifically on {exchange}."
-            )
+            entity_query = f"{retrieval_query}\nFocus specifically on {exchange}."
 
             # print(f"Retrieving for exchange: {exchange}")
             # print(f"Query: {entity_query}")
 
-            documents = retrieve(
-                entity_query,
-                limit=TOP_K,
-                exchange=exchange,
-            )
+            documents = retrieve(entity_query, limit=TOP_K, exchange=exchange)
 
-            # print(
-            #     "Retrieved:",
-            #     [
-            #         doc["metadata"].get("exchange")
-            #         for doc in documents
-            #     ],
-            # )
+            # print("Retrieved:", [doc["metadata"].get("exchange") for doc in documents])
 
             for document in documents:
                 document_id = document.get("id")
 
-                if (
-                    document_id is None
-                    or document_id not in existing_ids
-                ):
+                if document_id not in existing_ids:
                     merged_documents.append(document)
-
                     if document_id is not None:
                         existing_ids.add(document_id)
 
     else:
         # Generic retrieval when no specific exchange was detected.
-        documents = retrieve(
-            retrieval_query,
-            limit=TOP_K,
-        )
+        documents = retrieve(retrieval_query, limit=TOP_K)
 
         for document in documents:
             document_id = document.get("id")
 
-            if (
-                document_id is None
-                or document_id not in existing_ids
-            ):
+            if document_id not in existing_ids:
                 merged_documents.append(document)
-
                 if document_id is not None:
                     existing_ids.add(document_id)
 
@@ -126,9 +87,7 @@ def retrieve_documents(state: RAGState) -> RAGState:
 
 
 def evaluate_coverage(state: RAGState) -> RAGState:
-    llm = create_llm().with_structured_output(
-        CoverageEvaluation
-    )
+    llm = create_llm().with_structured_output(CoverageEvaluation)
 
     question = state["question"]
     exchanges = state.get("exchanges", [])
@@ -147,7 +106,6 @@ def evaluate_coverage(state: RAGState) -> RAGState:
     )
 
     exchange_instruction = ""
-
     if exchanges:
         exchange_instruction = f"""
 The user explicitly mentioned these exchanges:
@@ -215,20 +173,15 @@ Rules:
     print("retrieval_query:", evaluation.improved_query)
     print()
 
-    missing_exchanges = [
-        exchange
-        for exchange in exchanges
-        if evaluation.coverage_by_exchange.get(exchange, 0.0)
-        < COVERAGE_THRESHOLD
-    ]
+    missing_exchanges = []
+    for exchange in exchanges:
+        if evaluation.coverage_by_exchange.get(exchange, 0.0) < COVERAGE_THRESHOLD:
+            missing_exchanges.append(exchange)
 
     if exchanges:
         coverage_sufficient = not missing_exchanges
     else:
-        coverage_sufficient = (
-            evaluation.coverage_score
-            >= COVERAGE_THRESHOLD
-        )
+        coverage_sufficient = evaluation.coverage_score >= COVERAGE_THRESHOLD
 
     return {
         "coverage_score": evaluation.coverage_score,
@@ -241,10 +194,7 @@ Rules:
 
 def route_after_coverage(state: RAGState) -> str:
     iteration = state.get("iteration", 0)
-    coverage_sufficient = state.get(
-        "coverage_sufficient",
-        False,
-    )
+    coverage_sufficient = state.get("coverage_sufficient", False)
 
     if coverage_sufficient:
         return "complete"

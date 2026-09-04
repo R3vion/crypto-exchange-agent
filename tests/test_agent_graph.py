@@ -15,9 +15,7 @@ def test_graph_routes_comparison():
 
     analysis = result["query_analysis"]
 
-    assert analysis.operation == (
-        "retrieve_and_compare"
-    )
+    assert analysis.operation == ("retrieve_and_compare")
 
 
 def test_graph_routes_risk():

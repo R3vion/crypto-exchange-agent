@@ -1,7 +1,7 @@
 from decimal import Decimal # floating-point problem: 0.1 + 0.2 != 0.3
 
 
-def calculate_fee(amount: float, fee_rate: float) -> dict:
+def calculate_fee(amount:float, fee_rate:float) -> dict:
     """
     Calculate trading fee and total cost.
 
@@ -19,5 +19,5 @@ def calculate_fee(amount: float, fee_rate: float) -> dict:
         "amount": float(amount_decimal),
         "fee_rate": float(fee_rate_decimal),
         "fee": float(fee),
-        "total": float(total),
+        "total": float(total)
     }

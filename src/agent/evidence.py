@@ -15,39 +15,16 @@ class EvidenceReview(BaseModel):
 
 
 def evidence_review_node(state: AgentState) -> AgentState:
-    llm = create_llm().with_structured_output(
-        EvidenceReview
-    )
+    llm = create_llm().with_structured_output(EvidenceReview)
 
     question = state["question"]
-
-    documents = state.get(
-        "retrieved_documents",
-        [],
-    )
-
-    tool_results = state.get(
-        "tool_results",
-        [],
-    )
-
-    document_text = "\n\n".join(
-        [
-            f"Document {index + 1}:\n{doc.get('text', '')}"
-            for index, doc in enumerate(documents)
-        ]
-    )
-
-    tool_text = "\n\n".join(
-        [
-            f"Tool result {index + 1}:\n{tool}"
-            for index, tool in enumerate(tool_results)
-        ]
-    )
+    documents = state.get("retrieved_documents", [])
+    tool_results = state.get("tool_results", [])
+    document_text = "\n\n".join([f"Document {index + 1}:\n{doc.get('text', '')}" for index, doc in enumerate(documents)])
+    tool_text = "\n\n".join([f"Tool result {index + 1}:\n{tool}" for index, tool in enumerate(tool_results)])
 
     prompt = f"""
-You are the evidence review step of a financial
-crypto-exchange research assistant.
+You are the evidence review step of a financial crypto-exchange research assistant.
 
 User question:
 {question}

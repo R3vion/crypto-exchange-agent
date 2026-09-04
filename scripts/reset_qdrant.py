@@ -9,9 +9,7 @@ def main():
     print(f"Deleting collection: {QDRANT_COLLECTION}")
 
     if client.collection_exists(QDRANT_COLLECTION):
-        client.delete_collection(
-            collection_name=QDRANT_COLLECTION
-        )
+        client.delete_collection(collection_name=QDRANT_COLLECTION)
         print("Collection deleted.")
     else:
         print("Collection does not exist.")

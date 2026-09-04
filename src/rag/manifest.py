@@ -1,28 +1,19 @@
 from pathlib import Path
-
 import yaml
 
 from src.rag.models import DocumentMetadata
 
 
-def load_manifest(
-    manifest_path: str | Path,
-) -> list[tuple[str, DocumentMetadata]]:
+def load_manifest(manifest_path) -> list[tuple[str, DocumentMetadata]]:
     manifest_path = Path(manifest_path)
 
     if not manifest_path.exists():
-        raise FileNotFoundError(
-            f"Manifest not found: {manifest_path}"
-        )
+        raise FileNotFoundError(f"Manifest not found: {manifest_path}")
 
-    with manifest_path.open(
-        "r",
-        encoding="utf-8",
-    ) as file:
+    with manifest_path.open("r", encoding="utf-8") as file:
         data = yaml.safe_load(file)
 
     documents = []
-
     for item in data.get("documents", []):
         metadata = DocumentMetadata(
             source=item["source"],
@@ -33,11 +24,6 @@ def load_manifest(
             url=item["url"],
         )
 
-        documents.append(
-            (
-                item["file"],
-                metadata,
-            )
-        )
+        documents.append((item["file"], metadata))
 
     return documents

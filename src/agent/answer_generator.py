@@ -9,20 +9,9 @@ def answer_generator_node(
     llm = create_llm()
 
     question = state["question"]
-    evidence_summary = state.get(
-        "evidence_summary",
-        "",
-    )
-
-    tool_results = state.get(
-        "tool_results",
-        [],
-    )
-
-    evidence_sufficient = state.get(
-        "evidence_sufficient",
-        False,
-    )
+    evidence_summary = state.get("evidence_summary", "")
+    tool_results = state.get("tool_results", [])
+    evidence_sufficient = state.get("evidence_sufficient", False)
 
     prompt = f"""
 You are a crypto-exchange research assistant.
@@ -52,14 +41,6 @@ Rules:
     response = llm.invoke(prompt)
 
     if not evidence_sufficient:
-        return {
-            "final_answer": (
-                "*I do not have enough reliable evidence "
-                "to answer this question confidently.*"
-                f"\n\n{response.content}"
-            )
-        }
+        return {"final_answer": f"*I do not have enough reliable evidence to answer this question confidently.*\n\n{response.content}"}
     else:
-        return {
-            "final_answer": response.content,
-        }
+        return {"final_answer": response.content}

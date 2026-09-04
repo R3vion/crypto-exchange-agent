@@ -3,7 +3,7 @@ from typing import TypedDict
 from src.agent.state import QueryAnalysis
 
 
-class AgentState(TypedDict, total=False):
+class AgentState(TypedDict):
     question: str
 
     query_analysis: QueryAnalysis

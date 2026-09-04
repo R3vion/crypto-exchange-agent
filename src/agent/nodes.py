@@ -13,14 +13,11 @@ def query_analyzer_node(state: AgentState) -> AgentState:
     # print("requires_risk_scoring:", analysis.requires_risk_scoring)
     # print("============================\n")
 
-    return {
-        "query_analysis": analysis,
-    }
+    return {"query_analysis": analysis}
 
 
 def route_query(state: AgentState) -> str:
     analysis = state["query_analysis"]
-
     return analysis.operation
 
 

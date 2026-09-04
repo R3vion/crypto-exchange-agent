@@ -18,7 +18,4 @@ def test_evidence_review():
     )
 
     assert "evidence_summary" in result
-    assert isinstance(
-        result["evidence_sufficient"],
-        bool,
-    )
+    assert isinstance(result["evidence_sufficient"], bool)

@@ -21,26 +21,21 @@ def calculate_risk_score(factors: RiskFactors) -> dict:
         "regulatory_risk": 0.30,
         "security_risk": 0.30,
         "transparency_risk": 0.20,
-        "operational_risk": 0.20,
+        "operational_risk": 0.20
     }
 
     values = {
         "regulatory_risk": factors.regulatory_risk,
         "security_risk": factors.security_risk,
         "transparency_risk": factors.transparency_risk,
-        "operational_risk": factors.operational_risk,
+        "operational_risk": factors.operational_risk
     }
 
     for name, value in values.items():
         if not 0 <= value <= 10:
-            raise ValueError(
-                f"{name} must be between 0 and 10."
-            )
+            raise ValueError(f"{name} must be between 0 and 10.")
 
-    score = sum(
-        values[name] * weights[name]
-        for name in values
-    )
+    score = sum(values[name] * weights[name] for name in values)
 
     if score < 3.0:
         level = "low"
@@ -53,5 +48,5 @@ def calculate_risk_score(factors: RiskFactors) -> dict:
         "risk_score": round(score, 2),
         "risk_level": level,
         "factors": values,
-        "weights": weights,
+        "weights": weights
     }

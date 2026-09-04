@@ -4,38 +4,15 @@ from src.llm import create_llm
 
 
 class RiskEvaluation(BaseModel):
-    regulatory_risk: float = Field(
-        ge=0,
-        le=10,
-    )
-
-    security_risk: float = Field(
-        ge=0,
-        le=10,
-    )
-
-    transparency_risk: float = Field(
-        ge=0,
-        le=10,
-    )
-
-    operational_risk: float = Field(
-        ge=0,
-        le=10,
-    )
-
-    reasoning: list[str] = Field(
-        default_factory=list,
-    )
+    regulatory_risk: float = Field(ge=0, le=10)
+    security_risk: float = Field(ge=0, le=10)
+    transparency_risk: float = Field(ge=0, le=10)
+    operational_risk: float = Field(ge=0, le=10)
+    reasoning: list[str] = Field(default_factory=list)
 
 
-def evaluate_risk_evidence(
-    question: str,
-    documents: list[dict],
-) -> RiskEvaluation:
-    llm = create_llm().with_structured_output(
-        RiskEvaluation
-    )
+def evaluate_risk_evidence(question :str, documents :list[dict]) -> RiskEvaluation:
+    llm = create_llm().with_structured_output(RiskEvaluation)
 
     document_text = "\n\n".join(
         [

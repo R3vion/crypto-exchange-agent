@@ -49,7 +49,7 @@ EXCHANGES = {
 }
 
 
-def initialize_exchange_registry() -> None:
+def initialize_exchange_registry():
     with get_connection() as connection:
         for exchange in EXCHANGES.values():
             cursor = connection.execute(

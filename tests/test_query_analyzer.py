@@ -2,10 +2,7 @@ from src.agent.query_analyzer import analyze_query
 
 
 def test_query_analyzer():
-    result = analyze_query(
-        "Which exchange is the best long-term "
-        "choice under MiCA: Coinbase, Kraken or Bitpanda?"
-    )
+    result = analyze_query("Which exchange is the best long-term choice under MiCA: Coinbase, Kraken or Bitpanda?")
 
     assert result.intent == "comparison"
 
@@ -20,9 +17,7 @@ def test_query_analyzer():
 
 
 def test_query_analyzer_risk_question():
-    result = analyze_query(
-        "Which exchange is the riskiest and why?"
-    )
+    result = analyze_query("Which exchange is the riskiest and why?")
 
     assert result.intent == "risk"
 

@@ -1,9 +1,6 @@
 import pytest
 
-from src.tools.risk_scoring import (
-    RiskFactors,
-    calculate_risk_score,
-)
+from src.tools.risk_scoring import RiskFactors, calculate_risk_score
 
 
 def test_risk_score():

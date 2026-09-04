@@ -119,7 +119,6 @@ def extract_exchanges(question: str) -> list[str]:
     question_lower = question.lower()
 
     found = []
-
     for exchange in SUPPORTED_EXCHANGES:
         pattern = rf"\b{re.escape(exchange.lower())}\b"
 
@@ -128,7 +127,6 @@ def extract_exchanges(question: str) -> list[str]:
 
     if found:
         return found
-
     return extract_exchanges_with_llm(question)
 
 
@@ -152,13 +150,8 @@ def analyze_query(question: str) -> QueryAnalysis:
 
 
 def extract_exchanges_with_llm(question: str) -> list[str]:
-    llm = create_llm().with_structured_output(
-        ExchangeExtraction
-    )
-
-    supported_exchanges = ", ".join(
-        SUPPORTED_EXCHANGES
-    )
+    llm = create_llm().with_structured_output(ExchangeExtraction)
+    supported_exchanges = ", ".join(SUPPORTED_EXCHANGES)
 
     prompt = f"""
 You are an exchange-name extraction component.
@@ -190,8 +183,9 @@ Rules:
 
     result = llm.invoke(prompt)
 
-    return [
-        exchange
-        for exchange in result.exchanges
-        if exchange in SUPPORTED_EXCHANGES
-    ]
+    extracted_exchanges = []
+    for exchange in result.exchanges:
+        if exchange in SUPPORTED_EXCHANGES:
+            extracted_exchanges.append(exchange)
+        
+    return extracted_exchanges

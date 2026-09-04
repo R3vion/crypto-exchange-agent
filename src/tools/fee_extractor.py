@@ -1,7 +1,7 @@
 import re
 
 
-def extract_fee_rate(text: str) -> float | None:
+def extract_fee_rate(text:str) -> float | None:
     """
     Extract a simple percentage fee from retrieved text.
 
@@ -16,11 +16,7 @@ def extract_fee_rate(text: str) -> float | None:
     ]
 
     for pattern in patterns:
-        match = re.search(
-            pattern,
-            text,
-            flags=re.IGNORECASE,
-        )
+        match = re.search(pattern, text, flags=re.IGNORECASE)
 
         if match:
             percentage = float(match.group(1))

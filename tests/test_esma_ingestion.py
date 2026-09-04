@@ -1,14 +1,9 @@
 from pathlib import Path
 
-from src.ingestion.esma import (
-    load_esma_casps,
-    normalize_esma_casps,
-)
+from src.ingestion.esma import load_esma_casps, normalize_esma_casps
 
 
-CSV_PATH = Path(
-    "data/raw/regulatory/esma/mica_casps.csv"
-)
+CSV_PATH = Path("data/raw/regulatory/esma/mica_casps.csv")
 
 
 def test_esma_csv_exists():
@@ -29,9 +24,7 @@ def test_esma_csv_schema():
         "Website",
     }
 
-    assert expected_columns.issubset(
-        dataframe.columns
-    )
+    assert expected_columns.issubset(dataframe.columns)
 
 
 def test_esma_normalization():
