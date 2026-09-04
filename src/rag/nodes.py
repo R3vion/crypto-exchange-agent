@@ -23,10 +23,7 @@ class CoverageEvaluation(BaseModel):
 
     coverage_by_exchange: dict[str, float] = Field(
         default_factory=dict,
-        description=(
-            "Coverage score for each requested exchange. "
-            "Keys must be exchange names."
-        ),
+        description="Coverage score for each requested exchange. Keys must be exchange names.",
     )
 
     missing_information: list[str] = Field(
@@ -35,9 +32,7 @@ class CoverageEvaluation(BaseModel):
     )
 
     improved_query: str = Field(
-        description=(
-            "A better retrieval query targeting the missing information."
-        ),
+        description="A better retrieval query targeting the missing information.",
     )
 
 
@@ -70,10 +65,6 @@ def retrieve_documents(state: RAGState) -> RAGState:
     merged_documents = list(existing_documents)
 
     if exchanges:
-        # Entity-aware retrieval.
-        #
-        # For comparison questions we retrieve separately
-        # for every requested exchange.
         for exchange in exchanges:
             entity_query = (
                 f"{retrieval_query}\n"
@@ -187,6 +178,7 @@ relevant evidence to answer the question reliably.
 Rules:
 
 1. coverage_score must be between 0 and 1.
+   coverage_by_exchange must be between 0 and 1.
 
 2. 1.0 means the retrieved documents contain enough
    relevant evidence to answer the question reliably.
@@ -205,7 +197,7 @@ Rules:
 8. If an exchange has insufficient evidence, its
    coverage score should be low.
 
-9. If information is missing, create an improved retrieval
+9. improved_query: If information is missing, create an improved retrieval
    query that specifically targets the missing information.
 
 10. The improved query should be useful for another
@@ -214,12 +206,19 @@ Rules:
 
     evaluation = llm.invoke(prompt)
 
-    coverage_by_exchange = evaluation.coverage_by_exchange
+    print("\n=== COVERAGE BY EXCHANGE ===")
+    print("question:", state["question"])
+    print("documents num:", len(state.get("retrieved_documents", [])))
+    print("exchanges:", ", ".join(state.get("exchanges", [])))
+    print("coverage_by_exchange:", evaluation.coverage_by_exchange)
+    print("coverage_score:", evaluation.coverage_score)
+    print("retrieval_query:", evaluation.improved_query)
+    print()
 
     missing_exchanges = [
         exchange
         for exchange in exchanges
-        if coverage_by_exchange.get(exchange, 0.0)
+        if evaluation.coverage_by_exchange.get(exchange, 0.0)
         < COVERAGE_THRESHOLD
     ]
 
@@ -234,7 +233,7 @@ Rules:
     return {
         "coverage_score": evaluation.coverage_score,
         "coverage_sufficient": coverage_sufficient,
-        "coverage_by_exchange": coverage_by_exchange,
+        "coverage_by_exchange": evaluation.coverage_by_exchange,
         "missing_exchanges": missing_exchanges,
         "retrieval_query": evaluation.improved_query,
     }

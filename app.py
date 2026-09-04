@@ -128,6 +128,34 @@ if (st.session_state.get("analyze_from_example", False) or analyze_clicked):
 
         st.subheader("Agent steps")
 
+        coverage_score = result.get("coverage_score")
+        rag_iterations = result.get("rag_iterations")
+
+        if coverage_score is not None or rag_iterations is not None:
+            st.write("**RAG diagnostics**")
+            col1, col2, col3 = st.columns([0.1, 0.1, 0.8])
+
+            with col1:
+                if coverage_score is not None:
+                    st.metric(
+                        "Coverage score",
+                        f"{coverage_score:.2f}",
+                    )
+
+            with col2:
+                if rag_iterations is not None:
+                    st.metric(
+                        "RAG iterations",
+                        rag_iterations,
+                    )
+
+            with col3:
+                if coverage_score is not None:
+                    if coverage_score >= 0.75:
+                        st.success("RAG evidence coverage is sufficient.")
+                    else:
+                        st.warning("RAG evidence coverage is below the target threshold.")
+
         analysis = result.get("query_analysis")
 
         if analysis:

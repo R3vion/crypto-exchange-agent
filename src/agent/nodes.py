@@ -5,13 +5,13 @@ from src.rag.graph import build_rag_graph
 
 def query_analyzer_node(state: AgentState) -> AgentState:
     analysis = analyze_query(state["question"])
-    print("\n=== QUERY ANALYZER DEBUG ===")
-    print("question:", state["question"])
-    print("operation:", analysis.operation)
-    print("exchanges:", analysis.exchanges)
-    print("jurisdiction:", analysis.jurisdiction)
-    print("requires_risk_scoring:", analysis.requires_risk_scoring)
-    print("============================\n")
+    # print("\n=== QUERY ANALYZER DEBUG ===")
+    # print("question:", state["question"])
+    # print("operation:", analysis.operation)
+    # print("exchanges:", analysis.exchanges)
+    # print("jurisdiction:", analysis.jurisdiction)
+    # print("requires_risk_scoring:", analysis.requires_risk_scoring)
+    # print("============================\n")
 
     return {
         "query_analysis": analysis,
@@ -38,10 +38,9 @@ def rag_node(state: AgentState) -> AgentState:
     )
 
     return {
-        "retrieved_documents": result.get(
-            "retrieved_documents",
-            [],
-        ),
+        "retrieved_documents": result.get("retrieved_documents", []),
+        "coverage_score": result.get("coverage_score"),
+        "rag_iterations": result.get("iteration"),
     }
 
 def route_after_rag(state: AgentState) -> str:
@@ -50,21 +49,7 @@ def route_after_rag(state: AgentState) -> str:
     if analysis.operation == "calculate":
         return "calculator"
 
-    if analysis.operation == "risk_score":
-        return "risk_scoring"
-
-    return "complete"
-
-def route_after_rag(state: AgentState) -> str:
-    analysis = state["query_analysis"]
-
-    if analysis.operation == "calculate":
-        return "calculator"
-
-    if (
-        analysis.operation == "risk_score"
-        or analysis.requires_risk_scoring
-    ):
+    if analysis.operation == "risk_score" or analysis.requires_risk_scoring:
         return "risk_scoring"
 
     return "complete"

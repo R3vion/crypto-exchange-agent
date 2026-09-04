@@ -9,6 +9,8 @@ class AgentState(TypedDict, total=False):
     query_analysis: QueryAnalysis
 
     retrieved_documents: list[dict]
+    coverage_score: float | None
+    rag_iterations: int | None
 
     tool_results: list[dict]
 
