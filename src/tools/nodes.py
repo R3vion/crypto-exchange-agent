@@ -24,7 +24,7 @@ def risk_scoring_node(state: AgentState) -> AgentState:
             if document.get("metadata", {}).get("exchange") == exchange:
                 exchange_documents.append(document)
 
-        if len(exchange_documents):
+        if len(exchange_documents) == 0:
             raise ValueError(f"No retrieved evidence found for exchange: {exchange}")
 
         evaluation = evaluate_risk_evidence(question=question, documents=exchange_documents)
