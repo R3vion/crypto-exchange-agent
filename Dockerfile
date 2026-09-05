@@ -9,7 +9,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY src ./src
 COPY scripts ./scripts
 COPY app.py .
-COPY manifest.yaml .
+# COPY manifest.yaml .
 
 EXPOSE 8501
 
