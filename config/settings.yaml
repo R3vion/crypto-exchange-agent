@@ -4,7 +4,7 @@ project:
 
 llm:
   provider: ollama
-  model: qwen3.6:35b
+  model: qwen3.6:27B
   temperature: 0
 
 vector_store:
@@ -16,10 +16,10 @@ database:
 
 retrieval:
   top_k: 5
-  score_threshold: 0.35
+  score_threshold: 0.5
 
 agent:
-  max_iterations: 8
+  max_iterations: 3
 
 exchanges:
   - bitpanda

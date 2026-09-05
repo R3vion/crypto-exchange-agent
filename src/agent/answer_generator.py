@@ -2,9 +2,7 @@ from src.agent.graph_state import AgentState
 from src.llm import create_llm
 
 
-def answer_generator_node(
-    state: AgentState,
-) -> AgentState:
+def answer_generator_node(state: AgentState) -> AgentState:
 
     llm = create_llm()
 

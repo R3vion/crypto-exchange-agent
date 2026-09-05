@@ -6,7 +6,7 @@ from src.rag.state import RAGState
 
 
 MAX_ITERATIONS = 3
-COVERAGE_THRESHOLD = 0.65
+COVERAGE_THRESHOLD = 0.5 # smaller threshold due to small dataset gathered on public information
 TOP_K = 5
 
 
