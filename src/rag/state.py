@@ -1,7 +1,7 @@
 from typing import TypedDict
 
 
-class RAGState(TypedDict, total=False):
+class RAGState(TypedDict):
     question: str
     exchanges: list[str]
     jurisdiction: str | None

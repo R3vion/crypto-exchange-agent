@@ -50,7 +50,12 @@ Rules:
 
     review = llm.invoke(prompt)
 
-    return {
-        "evidence_summary": review.summary,
-        "evidence_sufficient": review.evidence_sufficient,
-    }
+    state["evidence_summary"] = review.summary
+    state["evidence_sufficient"] = review.evidence_sufficient
+
+    return state
+
+    # return {
+    #     "evidence_summary": review.summary,
+    #     "evidence_sufficient": review.evidence_sufficient,
+    # }

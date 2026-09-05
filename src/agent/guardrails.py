@@ -27,10 +27,10 @@ def guardrails_node(state: AgentState) -> AgentState:
             "The available evidence can only be used for general research and comparison."
         )
 
-        return {
-            "final_answer": f"{answer}\n\n{'!'*75}\n{safe_answer.upper()}\n{'!'*75}" 
+        state["final_answer"] = f"{answer}\n\n{'!'*75}\n{safe_answer.upper()}\n{'!'*75}"
             # showing the original answer as well since it is only a PoK (Proof of Knowledge ;)
             # but dont use this tool as a financial advisor pls.
-        }
+        
+    state["final_answer"] = answer
 
-    return {"final_answer": answer}
+    return state

@@ -13,7 +13,9 @@ def query_analyzer_node(state: AgentState) -> AgentState:
     # print("requires_risk_scoring:", analysis.requires_risk_scoring)
     # print("============================\n")
 
-    return {"query_analysis": analysis}
+    state["query_analysis"] = analysis
+
+    return state
 
 
 def route_query(state: AgentState) -> str:
@@ -34,11 +36,11 @@ def rag_node(state: AgentState) -> AgentState:
         }
     )
 
-    return {
-        "retrieved_documents": result.get("retrieved_documents", []),
-        "coverage_score": result.get("coverage_score"),
-        "rag_iterations": result.get("iteration"),
-    }
+    state["retrieved_documents"] = result.get("retrieved_documents", [])
+    state["coverage_score"] = result.get("coverage_score")
+    state["rag_iterations"] = result.get("iteration")
+
+    return state
 
 def route_after_rag(state: AgentState) -> str:
     analysis = state["query_analysis"]

@@ -39,6 +39,7 @@ Rules:
     response = llm.invoke(prompt)
 
     if not evidence_sufficient:
-        return {"final_answer": f"*I do not have enough reliable evidence to answer this question confidently.*\n\n{response.content}"}
+        state["final_answer"] = f"*I do not have enough reliable evidence to answer this question confidently.*\n\n{response.content}"
     else:
-        return {"final_answer": response.content}
+        state["final_answer"] = response.content
+    return state

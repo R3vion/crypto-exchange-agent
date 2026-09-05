@@ -80,10 +80,10 @@ def retrieve_documents(state: RAGState) -> RAGState:
                 if document_id is not None:
                     existing_ids.add(document_id)
 
-    return {
-        "retrieved_documents": merged_documents,
-        "iteration": iteration,
-    }
+    state["retrieved_documents"] = merged_documents
+    state["iteration"] = iteration
+    
+    return state
 
 
 def evaluate_coverage(state: RAGState) -> RAGState:
@@ -183,13 +183,13 @@ Rules:
     else:
         coverage_sufficient = evaluation.coverage_score >= COVERAGE_THRESHOLD
 
-    return {
-        "coverage_score": evaluation.coverage_score,
-        "coverage_sufficient": coverage_sufficient,
-        "coverage_by_exchange": evaluation.coverage_by_exchange,
-        "missing_exchanges": missing_exchanges,
-        "retrieval_query": evaluation.improved_query,
-    }
+    state["coverage_score"] = evaluation.coverage_score
+    state["coverage_sufficient"] = coverage_sufficient
+    state["coverage_by_exchange"] = evaluation.coverage_by_exchange,
+    state["missing_exchanges"] = missing_exchanges,
+    state["retrieval_query"] = evaluation.improved_query
+
+    return state
 
 
 def route_after_coverage(state: RAGState) -> str:

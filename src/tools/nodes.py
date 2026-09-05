@@ -56,10 +56,10 @@ def risk_scoring_node(state: AgentState) -> AgentState:
             }
         )
 
-    return {
-        "risk_scores": risk_scores,
-        "tool_results": tool_results,
-    }
+    state["risk_scores"] = risk_scores
+    state["tool_results"] = tool_results
+    
+    return state
 
 def calculator_node(state: AgentState) -> AgentState:
     analysis = state["query_analysis"]
@@ -87,7 +87,7 @@ def calculator_node(state: AgentState) -> AgentState:
 
     result = calculate_fee(amount=analysis.calculation_amount, fee_rate=fee_rate)
 
-    return {
+    tool_results = {
         "tool_results": [
             {
                 "tool": "calculator",
@@ -96,3 +96,7 @@ def calculator_node(state: AgentState) -> AgentState:
             }
         ]
     }
+
+    state["tool_results"] = tool_results
+    
+    return state
