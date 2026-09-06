@@ -163,10 +163,21 @@ python -m scripts.run_evaluation
 ```
 
 The evaluation measures routing accuracy against expected operations.
+Routing accuracy: 95.0%
 
 ## 10. Load Test
 
 A 75-query load test is provided.
+
+### Load test results
+| Metrics |  Value |
+| ------- | ------ |
+| Queries |    75  |
+| Mean    | 18.53s |
+| Median  | 19.24s |
+| P95     | 20.75s |
+| Min     | 16.16s |
+| Max     | 20.32s |
 
 Run:
 
@@ -196,29 +207,42 @@ Only the required tools are executed for a given query.
 
 For example, the Risk Scoring tool is not executed for a normal regulatory lookup.
 
-## 12. Local Setup
+## 12. Environment Variables
 
-Install dependencies:
+* `OLLAMA_BASE_URL` — Base URL of the Ollama API used for LLM inference.
+* `OLLAMA_MODEL` — Ollama model used for text generation and LLM inference.
+* `EMBEDDING_MODEL` — Model used to generate vector embeddings for semantic search.
+* `QDRANT_URL` — HTTP endpoint of the Qdrant vector database.
+* `QDRANT_COLLECTION` — Qdrant collection used to store and retrieve document embeddings.
+* `DATABASE_PATH` — Filesystem path to the SQLite database containing structured financial data.
+
+To run the application locally without docker with default values copy the `.env.example` file as `.env`
+
+
+## 13. Local Setup
+
+Install dependencies (only for running load_test.py & run_evaluation.py):
 
 ```bash
 pip install -r requirements.txt
 ```
 
-Start Qdrant and Ollama locally.
+<!-- Start Qdrant and Ollama locally. -->
 
 Pull the configured model:
 
 ```bash
 ollama pull qwen3.6:27B
 ```
+### Start the Application via `docker-compose`
 
 Run the application:
 
 ```bash
-streamlit run app.py
+docker-compose up --build
 ```
 
-## 13. Testing
+## 14. Testing
 
 Run the full test suite:
 
@@ -240,7 +264,7 @@ The test suite covers:
 * guardrails
 * end-to-end graph execution
 
-## 14. Limitations
+## 15. Limitations
 
 This is a prototype software.
 

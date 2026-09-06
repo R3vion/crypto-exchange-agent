@@ -22,7 +22,7 @@ def index_documents(documents: list[SourceDocument]) -> int:
 
     all_chunks = []
     for document in documents:
-        all_chunks.append(chunk_document(document))
+        all_chunks.extend(chunk_document(document))
 
     if not all_chunks:
         return 0
