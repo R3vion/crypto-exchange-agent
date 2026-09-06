@@ -5,7 +5,7 @@ import time
 from src.agent.graph import build_graph
 
 EXAMPLE_QUESTIONS = [
-    "What is MiCA?",
+    # "What is MiCA?", # no document contains this info so no result on this query
     "What is the purpose of MiCA?",
     "What is a CASP under MiCA?",
     "What MiCA authorization does Coinbase have in the EU?",

@@ -38,7 +38,7 @@ services:
     #   - ".env.prod"
     environment:
       OLLAMA_BASE_URL: http://host.docker.internal:11434
-      OLLAMA_MODEL: qwen3.6:35B
+      OLLAMA_MODEL: qwen3.6:27B
       EMBEDDING_MODEL: nomic-embed-text
       QDRANT_URL: http://qdrant:6333
       QDRANT_COLLECTION: crypto_exchange_documents
