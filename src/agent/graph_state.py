@@ -9,10 +9,9 @@ class AgentState(TypedDict):
     retrieved_documents: list[dict]
     tool_results: list[dict]
 
-    coverage_score: float | None # not used
-    rag_iterations: int | None # not used
-    risk_evidence: dict # not used
-    risk_scores: dict[str, dict] # not used
+    coverage_score: float | None
+    rag_iterations: int | None
+    risk_scores: dict[str, dict]
 
     evidence_summary: str
     evidence_sufficient: bool

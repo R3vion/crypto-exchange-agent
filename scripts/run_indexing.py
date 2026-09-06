@@ -1,8 +1,7 @@
 from pathlib import Path
 
 from src.rag.indexer import index_documents
-from src.rag.loaders import load_pdf
-from src.rag.manifest import load_manifest
+from src.rag.loaders import load_pdf, load_manifest
 
 
 DOCUMENT_ROOT = Path("data/raw/documents")

@@ -33,62 +33,74 @@ The LLM is responsible for query understanding and evidence evaluation, while de
 
 ## 3. Architecture
 
+The agent is implemented as a LangGraph workflow. The `query_analyzer` determines the query type, while the graph routes non-general queries through the RAG pipeline before performing any required calculation or risk scoring.
+
 ```text
 User
  │
  ▼
 Query Analyzer
  │
- ▼
-Conditional Router
- │
- ├── RAG Subgraph
- │      │
- │      ├── Retrieve
- │      ├── Coverage Evaluation
- │      └── Bounded Loop
- │           max 3 iterations
- │
- ├── Calculator
- │
- └── Risk Scoring
-        │
-        ▼
-Evidence Review
-        │
-        ▼
-Answer Generator
-        │
-        ▼
-Guardrails
-        │
-        ▼
-Final Answer
+ ├── general ──────────────────────────────┐
+ │                                         │
+ └── retrieve / compare / calculate /      │
+     risk_score                            │
+              │                            │
+              ▼                            │
+             RAG                           │
+              │                            │
+       ┌──────┼──────────┐                 │
+       │      │          │                 │
+       ▼      ▼          ▼                 │
+ Calculator  Risk      Evidence Review     │
+     Tool    Tool        │                 │
+       │      │          │                 │
+       └──────┴──────────┘                 │
+              │                            │
+              ▼                            │
+       Answer Generator ◄──────────────────┘
+              │
+              ▼
+          Guardrails
+              │
+              ▼
+             END
 ```
+
+For non-general queries, RAG is always executed first. After retrieval, the graph either performs a calculation, performs risk scoring, or continues directly to evidence review.
+
+General queries bypass RAG and proceed directly to answer generation.
+
 
 ## 4. RAG Subgraph
 
-The RAG component is implemented as a dedicated LangGraph subgraph.
-
-It uses iterative retrieval:
+The RAG component is implemented as a dedicated LangGraph subgraph with iterative retrieval.
 
 ```text
-Retrieve
-   ↓
-Evaluate coverage
-   ↓
-coverage sufficient?
-   ├── yes → END
-   └── no
-        ↓
-   Retrieve again
+START
+  │
+  ▼
+Retrieve Documents
+  │
+  ▼
+Evaluate Coverage
+  │
+  ▼
+Coverage sufficient?
+  ├── Yes → END
+  │
+  └── No
+       │
+       ▼
+  Retrieve Documents
+       │
+       └── repeat
 ```
 
-The loop is bounded to a maximum of *three* iterations.
+After each retrieval, the LLM evaluates the evidence coverage and identifies missing information. A Python router uses this evaluation to decide whether another retrieval is required or the RAG process is complete.
 
-The LLM evaluates a coverage score between 0 and 1 and identifies missing information.
+The retrieval loop is bounded to a maximum of three iterations.
 
-The Python router makes the final loop decision deterministically.
 
 ## 5. Tools
 
@@ -163,7 +175,17 @@ python -m scripts.run_evaluation
 ```
 
 The evaluation measures routing accuracy against expected operations.
+
 Routing accuracy: 95.0%
+```
+q18: expected=retrieve_and_compare, actual=risk_score, passed=False
+=== QUERY ANALYZER DEBUG ===
+question: What is Binance's current MiCA situation in the EU?
+operation: retrieve
+exchanges: ['Binance']
+jurisdiction: EU
+requires_risk_scoring: False
+```
 
 ## 10. Load Test
 
@@ -221,7 +243,13 @@ To run the application locally without docker with default values copy the `.env
 
 ## 13. Local Setup
 
-Install dependencies (only for running load_test.py & run_evaluation.py):
+Optional: Activate Virtual Environment:
+```bash
+python -m venv .venv
+.venv\Scripts\activate
+```
+
+Install dependencies (needed only for running load_test.py & run_evaluation.py):
 
 ```bash
 pip install -r requirements.txt
@@ -229,11 +257,17 @@ pip install -r requirements.txt
 
 <!-- Start Qdrant and Ollama locally. -->
 
-Pull the configured model:
+
+Install Ollama to your computer from its Official site:
+`https://ollama.com/`
+
+Pull the configured models:
 
 ```bash
 ollama pull qwen3.6:27B
+ollama pull nomic-embed-text
 ```
+
 ### Start the Application via `docker-compose`
 
 Run the application:
@@ -241,6 +275,7 @@ Run the application:
 ```bash
 docker-compose up --build
 ```
+The Streamlit App UI can be reached at http://localhost:80
 
 ## 14. Testing
 
@@ -264,7 +299,41 @@ The test suite covers:
 * guardrails
 * end-to-end graph execution
 
-## 15. Limitations
+## 15. How to Create or Extend the Vector Database
+
+The Docker Compose setup includes a pre-indexed vector database, so you **do not need to create a dataset to run the demo**.
+
+If you want to **create a new dataset or add documents to the existing vector database**, follow these steps:
+
+1. Place the PDF documents in `data/raw/documents/`.
+2. Create `data/raw/documents/manifest.yaml` and add an entry for each PDF with its metadata.
+3. Run the indexing script:
+
+```bash
+python -m scripts.run_indexing
+```
+
+Example `manifest.yaml`:
+
+```yaml
+documents:
+  - file: regulatory/mica_document.pdf
+    source: ESMA
+    source_type: regulator
+    exchange: null
+    jurisdiction: EU
+    document_type: regulation
+    url: https://www.esma.europa.eu/
+```
+
+The `file` path is relative to `data/raw/documents/`.
+
+The Qdrant dashboard is available at:
+`http://localhost:6333/dashboard`
+
+
+## 16. Limitations
+
 
 This is a prototype software.
 
@@ -274,7 +343,7 @@ The knowledge base contains a limited set of public documents and therefore cann
 
 The model runs locally through Ollama, so latency depends strongly on available hardware.
 
-## 15. Reproducibility
+## 17. Reproducibility
 
 The project keeps source documents, evaluation questions, tests and configuration in the repository so that the core experiments can be reproduced locally.
 
