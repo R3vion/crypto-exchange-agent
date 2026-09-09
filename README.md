@@ -16,6 +16,7 @@ Example questions:
 
 The system is designed as a research and decision-support assistant, not as personalized financial advice.
 
+
 ## 2. Why Agentic RAG?
 
 A simple RAG pipeline would retrieve documents and generate an answer.
@@ -30,6 +31,7 @@ For example:
 * comparison questions require evidence from multiple exchanges.
 
 The LLM is responsible for query understanding and evidence evaluation, while deterministic Python code performs calculations and risk scoring.
+
 
 ## 3. Architecture
 
@@ -121,6 +123,7 @@ The Risk Scoring tool calculates a weighted prototype risk score using:
 
 The score is a prototype analytical framework and is not an objective financial rating.
 
+
 ## 6. Guardrails
 
 The final answer passes through a basic deterministic guardrail layer.
@@ -129,21 +132,8 @@ The system blocks outputs containing explicit investment guarantees or direct pe
 
 The assistant also instructs the answer generator not to invent facts or present uncertain information as certain.
 
-## 7. Data
 
-The prototype uses publicly available textual sources, including regulatory and exchange documentation.
-
-Regulatory information includes ESMA MiCA material and the ESMA CASP register.
-
-Exchange-specific material includes public regulatory, fee, legal and security documentation.
-
-The documents are stored under:
-
-```text
-data/raw/
-```
-
-## 8. Technology
+## 7. Technology
 
 * Python
 * LangGraph
@@ -155,8 +145,12 @@ data/raw/
 * Docker
 * pytest
 
+for my application the **Qwen3.6:27B** Local LLM was chosen by default because its Q4_K_M quantization fits within the **24 GB VRAM of an RTX 3090**, allowing fully local inference without paid APIs. It also supports multiple languages and provides a **256K context window**.
 
-## 9. Evaluation
+The main trade-off is lower inference speed on consumer hardware. Local inference also lacks real-time knowledge, which is addressed in this project through **RAG**.
+
+
+## 8. Evaluation
 
 The project contains a 20-question evaluation set covering:
 
@@ -176,7 +170,7 @@ python -m scripts.run_evaluation
 
 The evaluation measures routing accuracy against expected operations.
 
-Routing accuracy: 95.0%, which means 19/20 PASSED.
+Routing accuracy: 95.0% (19/20 PASSED).
 The one which not passed can be seen below:
 ```
 q18: expected=retrieve_and_compare, actual=risk_score, passed=False
@@ -188,9 +182,9 @@ jurisdiction: EU
 requires_risk_scoring: False
 ```
 
-## 10. Load Test
+## 9. Load Test
 
-A 150-query load test is provided.
+A load test with 150 total requests based on 37 unique queries is provided. The queries are repeated cyclically until 150 requests are executed.
 
 Run:
 
@@ -204,8 +198,9 @@ python -m scripts.load_test
 | Queries     |    150  |
 | Mean        |  47.12s |
 | Median      |  28.81s |
-| P95 latency | 133.51s |
-| Min         |  5.45s  |
+| P90 latency |  90.07s |
+| P70 latency |  36.61s |
+| Min         |   5.45s |
 | Max         | 158.43s |
 | Avg RAG iter|   2.53  |
 
@@ -217,11 +212,11 @@ A second bottleneck is the **RAG retrieval loop**. The average was **2.53 iterat
 
 ### Optimization
 
-* Reduce the number of LLM calls by combining query analysis or coverage evaluation where possible.
-* Improve document coverage and retrieval quality to reduce unnecessary RAG iterations.
+* Reduce the number of LLM calls by **combining query analysis**.
+* **Improve document coverage** and retrieval quality to reduce unnecessary RAG iterations.
 
 
-## 11. Performance Optimizations
+## 10. Performance Optimizations
 
 ### Bounded RAG iteration
 
@@ -231,9 +226,10 @@ The RAG loop is limited to 3 iterations to prevent runaway latency.
 
 Only the required tools are executed for a given query.
 
-For example, the Risk Scoring tool is not executed for a normal regulatory lookup.
+*For example, the Risk Scoring tool is not executed for a normal regulatory lookup.*
 
-## 12. Environment Variables
+
+## 11. Environment Variables
 
 * `OLLAMA_BASE_URL` — Base URL of the Ollama API used for LLM inference.
 * `OLLAMA_MODEL` — Ollama model used for text generation and LLM inference.
@@ -242,34 +238,28 @@ For example, the Risk Scoring tool is not executed for a normal regulatory looku
 * `QDRANT_COLLECTION` — Qdrant collection used to store and retrieve document embeddings.
 * `DATABASE_PATH` — Filesystem path to the SQLite database containing structured financial data.
 
-for my application the **Qwen3.6:27B** Local LLM was chosen by default because its Q4_K_M quantization fits within the **24 GB VRAM of an RTX 3090**, allowing fully local inference without paid APIs. It also supports multiple languages and provides a **256K context window**.
-
-The main trade-off is lower inference speed on consumer hardware. Local inference also lacks real-time knowledge, which is addressed in this project through **RAG**.
-
 To run the application locally without docker with default values copy the `.env.example` file as `.env`
 
 
-## 13. Local Setup
+## 12. Local Setup
 
-Optional: Activate Virtual Environment:
+Optional: **Activate** Virtual Environment:
 ```bash
 python -m venv .venv
 .venv\Scripts\activate
 ```
 
-Install dependencies (needed only for running load_test.py & run_evaluation.py):
+0. Optional: Install dependencies **(needed only for running load_test.py & run_evaluation.py)**:
 
 ```bash
 pip install -r requirements.txt
 ```
+_________________________________________
 
-<!-- Start Qdrant and Ollama locally. -->
-
-
-Install Ollama to your computer from its Official site:
+1) **Install** Ollama to your computer from its Official site:
 `https://ollama.com/`
 
-Pull the configured models:
+2. **Pull** the configured models:
 
 ```bash
 ollama pull qwen3.6:27B
@@ -278,14 +268,15 @@ ollama pull nomic-embed-text
 
 ### Start the Application via `docker-compose`
 
-Run the application:
+3. **Run** the application:
 
 ```bash
 docker-compose up --build
 ```
-The Streamlit App UI can be reached at http://localhost:80
+**The Streamlit App UI can be reached at** http://localhost:80
 
-## 14. Testing
+
+## 13. Testing
 
 Run the full test suite:
 
@@ -294,41 +285,38 @@ pytest -v
 ```
 
 ```
-collected 31 items
+collected 28 items
 
 test_graph_routes_comparison            PASSED [  3%]
-test_graph_routes_risk                  PASSED [  6%]
-test_comparison_routes_to_rag           PASSED [  9%]
-test_risk_question_is_analyzed          PASSED [ 12%]
-test_fee_calculation_routes_through_rag PASSED [ 16%]
-test_risk_question_runs_risk_tool       PASSED [ 19%]
-test_end_to_end_rag_question            PASSED [ 22%]
-test_end_to_end_guardrails              PASSED [ 25%]
-test_answer_generator                   PASSED [ 29%]
-test_calculate_fee                      PASSED [ 32%]
-test_calculate_zero_fee                 PASSED [ 35%]
-test_esma_csv_exists                    PASSED [ 38%]
-test_esma_csv_schema                    PASSED [ 41%]
-test_esma_normalization                 PASSED [ 45%]
-test_evidence_review                    PASSED [ 48%]
-test_resolve_coinbase                   PASSED [ 51%]
-test_resolve_case_insensitive           PASSED [ 54%]
-test_resolve_unknown_exchange           PASSED [ 58%]
-test_extract_percentage_fee             PASSED [ 61%]
-test_extract_percent_fee                PASSED [ 64%]
-test_no_fee_found                       PASSED [ 67%]
-test_guardrails_allow_normal_answer     PASSED [ 70%]
-test_guardrails_block_financial_advice  PASSED [ 74%]
-test_llm_connection                     PASSED [ 77%]
-test_query_analyzer                     PASSED [ 80%]
-test_query_analyzer_risk_question       PASSED [ 83%]
-test_rag_graph_returns_documents        PASSED [ 87%]
-test_retrieval_returns_results          PASSED [ 90%]
-test_risk_score                         PASSED [ 93%]
+test_graph_routes_risk                  PASSED [  7%]
+test_comparison_routes_to_rag           PASSED [ 10%]
+test_risk_question_is_analyzed          PASSED [ 14%]
+test_fee_calculation_routes_through_rag PASSED [ 17%]
+test_risk_question_runs_risk_tool       PASSED [ 21%]
+test_end_to_end_rag_question            PASSED [ 25%]
+test_end_to_end_guardrails              PASSED [ 28%]
+test_answer_generator                   PASSED [ 32%]
+test_calculate_fee                      PASSED [ 35%]
+test_calculate_zero_fee                 PASSED [ 39%]
+test_evidence_review                    PASSED [ 42%]
+test_resolve_coinbase                   PASSED [ 46%]
+test_resolve_case_insensitive           PASSED [ 50%]
+test_resolve_unknown_exchange           PASSED [ 53%]
+test_extract_percentage_fee             PASSED [ 57%]
+test_extract_percent_fee                PASSED [ 60%]
+test_no_fee_found                       PASSED [ 64%]
+test_guardrails_allow_normal_answer     PASSED [ 67%]
+test_guardrails_block_financial_advice  PASSED [ 71%]
+test_llm_connection                     PASSED [ 75%]
+test_query_analyzer                     PASSED [ 78%]
+test_query_analyzer_risk_question       PASSED [ 82%]
+test_rag_graph_returns_documents        PASSED [ 85%]
+test_retrieval_returns_results          PASSED [ 89%]
+test_risk_score                         PASSED [ 92%]
 test_high_risk                          PASSED [ 96%]
 test_invalid_risk_factor                PASSED [100%]
 
-========== 31 passed in 719.73s (0:11:59) ==========
+========== 28 passed in 673.45s (0:11:13) ==========
 ```
 
 The test suite covers:
@@ -345,7 +333,8 @@ The test suite covers:
 * guardrails
 * end-to-end graph execution
 
-## 15. How to Create or Extend the Vector Database
+
+## 14. How to Create or Extend the Vector Database
 
 The Docker Compose setup includes a pre-indexed vector database, so you **do not need to create a dataset to run the demo**.
 
@@ -378,8 +367,13 @@ The Qdrant dashboard is available at:
 `http://localhost:6333/dashboard`
 
 
-## 16. Limitations
+## 15. Future Improvements
 
+* **Adaptive retrieval:** Dynamically adjust `top_k` based on query complexity. For example, comparison queries could use a smaller `top_k` per entity, followed by global **reranking** to keep only the most relevant 6–8 documents.
+* **Clarification questions:** Add an interactive clarification step when a query is too broad or ambiguous, allowing the user to narrow the intended scope before retrieval.
+* **Task-specific LLMs:** Use smaller or fine-tuned models for different task types and complexity levels. This could reduce inference time and resource usage while maintaining task-specific accuracy.
+
+## 16. Limitations
 
 This is a prototype software.
 
@@ -388,6 +382,7 @@ The risk score is a deterministic analytical framework, not a regulated or objec
 The knowledge base contains a limited set of public documents and therefore cannot represent every exchange, jurisdiction or market condition.
 
 The model runs locally through Ollama, so latency depends strongly on available hardware.
+
 
 ## 17. Reproducibility
 
