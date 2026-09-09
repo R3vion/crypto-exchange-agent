@@ -176,7 +176,8 @@ python -m scripts.run_evaluation
 
 The evaluation measures routing accuracy against expected operations.
 
-Routing accuracy: 95.0%
+Routing accuracy: 95.0%, which means 19/20 PASSED.
+The one which not passed can be seen below:
 ```
 q18: expected=retrieve_and_compare, actual=risk_score, passed=False
 === QUERY ANALYZER DEBUG ===
@@ -189,17 +190,7 @@ requires_risk_scoring: False
 
 ## 10. Load Test
 
-A 75-query load test is provided.
-
-### Load test results
-| Metrics |  Value |
-| ------- | ------ |
-| Queries |    75  |
-| Mean    | 18.53s |
-| Median  | 19.24s |
-| P95     | 20.75s |
-| Min     | 16.16s |
-| Max     | 20.32s |
+A 150-query load test is provided.
 
 Run:
 
@@ -207,15 +198,28 @@ Run:
 python -m scripts.load_test
 ```
 
-The script reports:
+### Load test results
+|   Metrics   |  Value  |
+| ----------- | ------- |
+| Queries     |    150  |
+| Mean        |  47.12s |
+| Median      |  28.81s |
+| P95 latency | 133.51s |
+| Min         |  5.45s  |
+| Max         | 158.43s |
+| Avg RAG iter|   2.53  |
 
-* mean latency
-* median latency
-* P95 latency
-* minimum latency
-* maximum latency
+### Bottleneck Analysis
 
-The main expected bottleneck is local LLM inference time, especially because query analysis, coverage evaluation and answer generation require model inference.
+The main bottleneck is **local LLM inference**, as query analysis, RAG coverage evaluation, and answer generation each require model inference.
+
+A second bottleneck is the **RAG retrieval loop**. The average was **2.53 iterations per query**, close to the maximum of 3. The small dataset often does not contain enough relevant evidence to reach the coverage threshold, causing additional retrieval attempts before the loop is terminated.
+
+### Optimization
+
+* Reduce the number of LLM calls by combining query analysis or coverage evaluation where possible.
+* Improve document coverage and retrieval quality to reduce unnecessary RAG iterations.
+
 
 ## 11. Performance Optimizations
 
@@ -237,6 +241,10 @@ For example, the Risk Scoring tool is not executed for a normal regulatory looku
 * `QDRANT_URL` — HTTP endpoint of the Qdrant vector database.
 * `QDRANT_COLLECTION` — Qdrant collection used to store and retrieve document embeddings.
 * `DATABASE_PATH` — Filesystem path to the SQLite database containing structured financial data.
+
+for my application the **Qwen3.6:27B** Local LLM was chosen by default because its Q4_K_M quantization fits within the **24 GB VRAM of an RTX 3090**, allowing fully local inference without paid APIs. It also supports multiple languages and provides a **256K context window**.
+
+The main trade-off is lower inference speed on consumer hardware. Local inference also lacks real-time knowledge, which is addressed in this project through **RAG**.
 
 To run the application locally without docker with default values copy the `.env.example` file as `.env`
 
@@ -283,6 +291,44 @@ Run the full test suite:
 
 ```bash
 pytest -v
+```
+
+```
+collected 31 items
+
+test_graph_routes_comparison            PASSED [  3%]
+test_graph_routes_risk                  PASSED [  6%]
+test_comparison_routes_to_rag           PASSED [  9%]
+test_risk_question_is_analyzed          PASSED [ 12%]
+test_fee_calculation_routes_through_rag PASSED [ 16%]
+test_risk_question_runs_risk_tool       PASSED [ 19%]
+test_end_to_end_rag_question            PASSED [ 22%]
+test_end_to_end_guardrails              PASSED [ 25%]
+test_answer_generator                   PASSED [ 29%]
+test_calculate_fee                      PASSED [ 32%]
+test_calculate_zero_fee                 PASSED [ 35%]
+test_esma_csv_exists                    PASSED [ 38%]
+test_esma_csv_schema                    PASSED [ 41%]
+test_esma_normalization                 PASSED [ 45%]
+test_evidence_review                    PASSED [ 48%]
+test_resolve_coinbase                   PASSED [ 51%]
+test_resolve_case_insensitive           PASSED [ 54%]
+test_resolve_unknown_exchange           PASSED [ 58%]
+test_extract_percentage_fee             PASSED [ 61%]
+test_extract_percent_fee                PASSED [ 64%]
+test_no_fee_found                       PASSED [ 67%]
+test_guardrails_allow_normal_answer     PASSED [ 70%]
+test_guardrails_block_financial_advice  PASSED [ 74%]
+test_llm_connection                     PASSED [ 77%]
+test_query_analyzer                     PASSED [ 80%]
+test_query_analyzer_risk_question       PASSED [ 83%]
+test_rag_graph_returns_documents        PASSED [ 87%]
+test_retrieval_returns_results          PASSED [ 90%]
+test_risk_score                         PASSED [ 93%]
+test_high_risk                          PASSED [ 96%]
+test_invalid_risk_factor                PASSED [100%]
+
+========== 31 passed in 719.73s (0:11:59) ==========
 ```
 
 The test suite covers:

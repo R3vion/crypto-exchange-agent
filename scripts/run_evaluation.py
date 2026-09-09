@@ -12,7 +12,14 @@ def main():
     graph = build_graph()
 
     passed = 0
-    for item in questions:
+    question_num = 0
+    for i, item in enumerate(questions):
+        try:
+            expected = item["expected_operation"]
+            question_num += 1
+        except KeyError:
+            continue
+
         result = graph.invoke(
             {
                 "question": item["question"],
@@ -20,7 +27,6 @@ def main():
         )
 
         actual = result["query_analysis"].operation
-        expected = item["expected_operation"]
 
         success = actual == expected
 
@@ -34,7 +40,7 @@ def main():
             f'passed={success}'
         )
 
-    accuracy = passed / len(questions)
+    accuracy = passed / question_num
 
     print(f"\nRouting accuracy: {accuracy:.1%}")
 

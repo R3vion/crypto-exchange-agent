@@ -98,5 +98,78 @@
     "id": "q20",
     "question": "What is CoinCash's regulatory status in Hungary?",
     "expected_operation": "retrieve"
+  },
+
+
+
+
+
+  {
+    "id": "q21",
+    "question": "What is the purpose of MiCA?"
+  },
+  {
+    "id": "q22",
+    "question": "What is a CASP under MiCA?"
+  },
+  {
+    "id": "q23",
+    "question": "What MiCA authorization does Coinbase have in the EU?"
+  },
+  {
+    "id": "q24",
+    "question": "What MiCA authorization does Kraken have?"
+  },
+  {
+    "id": "q25",
+    "question": "What MiCA licenses does Bitpanda have?"
+  },
+  {
+    "id": "q26",
+    "question": "What are Coinbase Advanced trading fees?"
+  },
+  {
+    "id": "q27",
+    "question": "What are Kraken trading fees?"
+  },
+  {
+    "id": "q28",
+    "question": "What security measures does Bitpanda describe?"
+  },
+  {
+    "id": "q29",
+    "question": "Which exchange is the riskiest and why?"
+  },
+  {
+    "id": "q30",
+    "question": "Compare Coinbase, Kraken and Bitpanda under MiCA."
+  },
+  {
+    "id": "q31",
+    "question": "Which exchange has the strongest regulatory position in the EU?"
+  },
+  {
+    "id": "q32",
+    "question": "Which exchange is the best long-term choice under MiCA?"
+  },
+  {
+    "id": "q33",
+    "question": "Which exchange has the lowest trading cost?"
+  },
+  {
+    "id": "q34",
+    "question": "Kraken or Coinbase is riskier and why?"
+  },
+  {
+    "id": "q35",
+    "question": "How much would I pay in fees for a $10,000 Coinbase trade?"
+  },
+  {
+    "id": "q36",
+    "question": "How much would I pay in fees for a $5,000 Kraken spot trade?"
+  },
+  {
+    "id": "q37",
+    "question": "where can I trade futures of the available exchanges?"
   }
 ]

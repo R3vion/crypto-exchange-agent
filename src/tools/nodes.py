@@ -87,15 +87,13 @@ def calculator_node(state: AgentState) -> AgentState:
 
     result = calculate_fee(amount=analysis.calculation_amount, fee_rate=fee_rate)
 
-    tool_results = {
-        "tool_results": [
+    tool_results = [
             {
                 "tool": "calculator",
                 "result": result,
                 "source": fee_source,
             }
         ]
-    }
 
     state["tool_results"] = tool_results
     

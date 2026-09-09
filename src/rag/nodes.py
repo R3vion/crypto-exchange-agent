@@ -164,14 +164,14 @@ Rules:
 
     evaluation = llm.invoke(prompt)
 
-    print("\n=== COVERAGE BY EXCHANGE ===")
-    print("question:", state["question"])
-    print("documents num:", len(state.get("retrieved_documents", [])))
-    print("exchanges:", ", ".join(state.get("exchanges", [])))
-    print("coverage_by_exchange:", evaluation.coverage_by_exchange)
-    print("coverage_score:", evaluation.coverage_score)
-    print("retrieval_query:", evaluation.improved_query)
-    print()
+    # print("\n=== COVERAGE BY EXCHANGE ===")
+    # print("question:", state["question"])
+    # print("documents num:", len(state.get("retrieved_documents", [])))
+    # print("exchanges:", ", ".join(state.get("exchanges", [])))
+    # print("coverage_by_exchange:", evaluation.coverage_by_exchange)
+    # print("coverage_score:", evaluation.coverage_score)
+    # print("retrieval_query:", evaluation.improved_query)
+    # print()
 
     missing_exchanges = []
     for exchange in exchanges:
